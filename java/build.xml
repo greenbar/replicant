@@ -1,0 +1,76 @@
+<project name="replicant" default="build" basedir=".">
+
+  <macrodef name="compile">
+    <attribute name="destdir" />
+    <attribute name="srcdir" />
+    <attribute name="classpathref" />
+    <sequential>
+      <mkdir dir="@{destdir}" />
+      <javac destdir="@{destdir}" srcdir="@{srcdir}" classpathref="@{classpathref}" debug="yes" >
+        <compilerarg value="-Xlint:unchecked"/>
+    	</javac>
+    	
+      <copy todir="@{destdir}">
+        <fileset dir="@{srcdir}" excludes="**/*.java, **/.svn, .svnignore" />
+      </copy>
+    </sequential>
+  </macrodef>
+
+  <target name="clean">
+    <delete dir="target" />
+  </target>
+
+  <target name="main-classes">
+    <property name="main.classes" value="target/main/classes" />
+    <path id="main.classpath">
+      <fileset dir="lib/main" includes="*.jar" />
+    </path>
+    <compile srcdir="src/main" destdir="${main.classes}" classpathref="main.classpath" />
+  </target>
+
+  <target name="unittest-classes" depends="main-classes">
+    <property name="unittest.classes" value="target/unittest/classes" />
+    <path id="unittest.classpath">
+      <path refid="main.classpath" />
+      <path location="${main.classes}" />
+      <fileset dir="lib/unittest" includes="*.jar" />
+    </path>
+    <compile srcdir="src/unittest" destdir="${unittest.classes}" classpathref="unittest.classpath" />
+  </target>
+
+  <target name="unittest-report" depends="unittest-classes">
+    <mkdir dir="target/unittest/report" />
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+        <path refid="unittest.classpath" />
+        <path location="${unittest.classes}" />
+      </classpath>
+      <formatter type="plain" />
+      <batchtest fork="yes" todir="target/unittest/report">
+        <fileset dir="src/unittest" includes="**/*Test.java" />
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="project-jar" depends="main-classes">
+    <loadfile property="version" srcFile="version.txt" />
+    <property name="dist" value="target/dist" />
+    <mkdir dir="${dist}" />
+    <jar destfile="${dist}/${ant.project.name}.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="${ant.project.name}" />
+        <attribute name="Implementation-Version" value="${version}" />
+      </manifest>
+      <zipfileset dir="${main.classes}" />
+    </jar>
+  </target>
+
+  <target name="project-source-zip">
+    <property name="dist" value="target/dist" />
+    <mkdir dir="${dist}" />
+    <zip destfile="${dist}/${ant.project.name}-src.zip" basedir="src" />
+  </target>
+
+  <target name="build" depends="clean, unittest-report, project-jar, project-source-zip" />
+
+</project>
