@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/scala"/>
+	<classpathentry kind="src" path="src/test/scala"/>
+	<classpathentry kind="con" path="ch.epfl.lamp.sdt.launching.SCALA_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib_managed/scala_2.8.1/compile/scalatest-1.2.jar"/>
+	<classpathentry kind="lib" path="lib_managed/scala_2.8.1/test/junit-4.8.1.jar"/>
+	<classpathentry kind="output" path="target"/>
+</classpath>
