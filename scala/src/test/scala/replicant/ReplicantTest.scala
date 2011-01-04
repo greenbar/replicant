@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package replicant
 
 import org.scalatest._

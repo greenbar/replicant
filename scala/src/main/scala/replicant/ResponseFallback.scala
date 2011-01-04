@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package replicant
 
 sealed abstract class ResponseFallback[+Result] {
@@ -11,4 +12,3 @@ object NoResponse extends ResponseFallback[Nothing] {
 class FallbackValue[Result](val value: Result) extends ResponseFallback[Result] {
   def apply(exception: UnknownResponseException) = () => value
 }
-  

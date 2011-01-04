@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package object replicant {
 
   implicit val responseFallbackForAnyRef : ResponseFallback[Null   ] = NoResponse

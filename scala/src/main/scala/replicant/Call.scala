@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package replicant
 
 case class Call[ArgTuple](mock: Any, methodName: String, argTuple: ArgTuple) {

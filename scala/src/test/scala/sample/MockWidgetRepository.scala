@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package sample
 
 class MockWidgetRepository extends WidgetRepository { mock =>

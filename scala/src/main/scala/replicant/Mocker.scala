@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package replicant
 
 object Mocker {

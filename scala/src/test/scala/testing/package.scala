@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package object testing extends org.scalatest.Assertions {
 
   class TestException(message: String) extends Exception(message)

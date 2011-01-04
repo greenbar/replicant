@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package replicant
 
 class MappedResponder[ArgTuple, Result] extends Responder[ArgTuple, Result] {

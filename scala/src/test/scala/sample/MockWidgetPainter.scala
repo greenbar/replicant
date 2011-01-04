@@ -1,3 +1,4 @@
+// Copyright 2011 Kiel Hodges
 package sample
 
 class MockWidgetPainter extends WidgetPainter { mock =>
