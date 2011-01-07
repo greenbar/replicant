@@ -48,7 +48,39 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
     queue.nextRequest should equal(Some(Request(3)))
     queue.nextRequest should equal(None)
     intercept[java.util.NoSuchElementException] { queue.nextRequest }
-   
+  }
+  
+  class Mocker2[Args1, Args2, Result](mock: Any, methodName: String) {
+    def assertCalled(args1: Args1)(args2: Args2) {}
+    def expect(args1: Args1)(args2: Args2)(response: => Result) {}
+    def apply(args1: Args1)(args2: Args2): Result = {throw new RuntimeException("not implemented")}
+  }
+    
+  private trait Foo {
+    def add(x: Int, y: Int)(z: Int): Int
+  }
+  
+  private class MockFoo extends Foo { mock =>
+    import replicant._
+    object method {
+      val add = Mocker[((Int, Int), Int), Int](mock, "add")
+    }
+    def add(x: Int, y: Int)(z: Int): Int = method.add( (x, y), (z) ) 
+  }
+
+  @Test def testMultipleParameterLists {
+    val mock = new MockFoo
+    mock.method.add.expect( (10, 5), (1) ) { 101 }
+    mock.method.add.expect( (10, 5), (2) ) { 102 }
+    mock.method.add.expect( (20, 3), (1) ) { 201 }
+    val add10 = mock.add(10, 5) _
+    val add20: Int => Int = mock.add(20, 3)
+    
+    add10(1) should equal(101)
+    add10(2) should equal(102)
+    add20(1) should equal(201)
+    
+    mock.method.add.assertCalled( (10, 5), (1) )
   }
   
 }

@@ -40,11 +40,11 @@ class Mocker[Args, Result](mock: Any, methodName: String, fallback: ResponseFall
 
   private def callWith(args: Args) = Call(mock, methodName, args)
   
-  private def responseFor(call: Call[Args]) = responder(call).fold(fallback(_), identity)
+  private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
   
   private val responder = new MappedResponder[Args, Result]()
   
-  private val called = scala.collection.mutable.ListBuffer[Call[Args]]()
+  private val called = scala.collection.mutable.ListBuffer[Call]()
   
 }
   
