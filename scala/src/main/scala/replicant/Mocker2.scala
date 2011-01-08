@@ -1,28 +1,32 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
-object Mocker {
+object Mocker2 {
 
   def apply[Args, Result](mock: Any, methodName: String)
-    (implicit fallback: ResponseFallback[Result]): Mocker[Args, Result] = 
-      new Mocker(mock, methodName, fallback)
+    (implicit fallback: ResponseFallback[Result]): Mocker2[Args, Args, Result] = 
+      new Mocker2(mock, methodName, fallback)
     
 }
 
-class Mocker[Args, Result] private[replicant] (mock: Any, methodName: String, fallback: ResponseFallback[Result]) {
+class Mocker2[Args1, Args2, Result] private[replicant] (
+    mock: Any, 
+    methodName: String, 
+    fallback: ResponseFallback[Result]
+) {
   
-  def expect(args: Args)(response: => Result) { responder(callWith(args)) = response _ }
+  def expect(args1: Args1)(args2: Args2)(response: => Result) { responder(callWith(args1)(args2)) = response _ }
   
-  def apply(args: Args) = {
-    val call = callWith(args)
+  def apply(args1: Args1)(args2: Args2) = {
+    val call = callWith(args1)(args2)
     called += call
     responseFor(call)()
   }
   
   import org.scalatest.Assertions.assert
   
-  def assertCalled(args: Args) { 
-    val call = callWith(args)
+  def assertCalled(args1: Args1)(args2: Args2) { 
+    val call = callWith(args1)(args2)
     assert(called.contains(call), "Expected " + call + ", but " + historyDescription)
   }
 
@@ -38,7 +42,7 @@ class Mocker[Args, Result] private[replicant] (mock: Any, methodName: String, fa
   
   private def historyDescription = "received" + (if (called.isEmpty) " no calls" else ":\n  " + called.mkString("\n  "))
 
-  private def callWith(args: Args) = Call(mock, methodName)(args)
+  private val callWith = Call(mock, methodName)
   
   private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
   

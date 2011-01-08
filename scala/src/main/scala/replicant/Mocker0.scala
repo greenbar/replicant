@@ -1,28 +1,25 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
-object Mocker {
+object Mocker0 {
 
-  def apply[Args, Result](mock: Any, methodName: String)
-    (implicit fallback: ResponseFallback[Result]): Mocker[Args, Result] = 
-      new Mocker(mock, methodName, fallback)
+  def apply[Result](mock: Any, methodName: String) (implicit fallback: ResponseFallback[Result]): Mocker0[Result] = 
+      new Mocker0(mock, methodName, fallback)
     
 }
 
-class Mocker[Args, Result] private[replicant] (mock: Any, methodName: String, fallback: ResponseFallback[Result]) {
+class Mocker0[Result] private[replicant] (mock: Any, methodName: String, fallback: ResponseFallback[Result]) {
   
-  def expect(args: Args)(response: => Result) { responder(callWith(args)) = response _ }
+  def expect(response: => Result) { responder(call) = response _ }
   
-  def apply(args: Args) = {
-    val call = callWith(args)
+  def apply() = {
     called += call
     responseFor(call)()
   }
   
   import org.scalatest.Assertions.assert
   
-  def assertCalled(args: Args) { 
-    val call = callWith(args)
+  def assertCalled { 
     assert(called.contains(call), "Expected " + call + ", but " + historyDescription)
   }
 
@@ -38,7 +35,7 @@ class Mocker[Args, Result] private[replicant] (mock: Any, methodName: String, fa
   
   private def historyDescription = "received" + (if (called.isEmpty) " no calls" else ":\n  " + called.mkString("\n  "))
 
-  private def callWith(args: Args) = Call(mock, methodName)(args)
+  private val call = Call(mock, methodName)
   
   private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
   

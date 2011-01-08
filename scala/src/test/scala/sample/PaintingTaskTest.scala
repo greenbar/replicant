@@ -22,7 +22,7 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
     val paintingTask     = new PaintingTask(requestQueue, painter, widgetRepository);
 
     val requests = scala.collection.mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
-    requestQueue.method.nextRequest.expect() { requests.dequeue }
+    requestQueue.method.nextRequest.expect { requests.dequeue }
     widgetRepository.method.findWidget.expect(17) (widget1);
     widgetRepository.method.findWidget.expect(42) (widget2);
     widgetRepository.method.findWidget.expect(37) (widget3);
@@ -40,7 +40,7 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
   @Test def testOrderingResponses {
     val queue = new MockRequestQueue
     val requests = scala.collection.mutable.Queue(Some(Request(1)), Some(Request(2)), Some(Request(3)), None)
-    queue.method.nextRequest.expect() {
+    queue.method.nextRequest.expect {
       requests.dequeue
     }
     queue.nextRequest should equal(Some(Request(1)))

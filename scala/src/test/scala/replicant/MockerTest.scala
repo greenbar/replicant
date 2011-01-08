@@ -22,7 +22,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   private val mock = Mock("aMock")
   
   @Test def testReturningValues {
-    val mocker = Mocker[(Int, String), A](mock, "aMethod")
+    val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
     
     mocker.expect(1, "abc") { a1 }
     mocker.expect(2, "xyz") { a2 }
@@ -32,7 +32,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testThrowingExceptions {
-    val mocker = Mocker[(Int, String), A](mock, "aMethod")
+    val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
     val exception = new TestException("testing")
     
     mocker.expect(1, "abc") { throw exception }
@@ -40,7 +40,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testWithFallbackValue {
-    val mocker = Mocker[Int, A](mock, "aMethod")(new FallbackValue(a3))
+    val mocker = new Mocker[Int, A](mock, "aMethod", new FallbackValue(a3))
     mocker.expect(1) {a1}
     mocker.expect(2) {a2}
     
@@ -50,7 +50,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testWithNoResponse {
-    val mocker = Mocker[Int, A](mock, "aMethod")(NoResponse)
+    val mocker = new Mocker[Int, A](mock, "aMethod", NoResponse)
     mocker.expect(1) {a1}
     mocker.expect(2) {a2}
     
@@ -62,7 +62,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
 
   @Test def testRecordingCalls {
-    val mocker = Mocker[(Int, String), A](mock, "aMethod")
+    val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
     mocker.expect(1, "abc") { a1 }
     mocker.expect(2, "xyz") { a2 }
     
@@ -80,7 +80,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     intercept[TestFailedException] { 
       mocker.assertNotCalled
     }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-    		"  " + Call(mock, "aMethod")((1, "abc")))
+    		"  " + Call(mock, "aMethod")(1, "abc"))
     intercept[TestFailedException] { 
       mocker.assertCalled(2, "xyz")
     }.message.get should equal("Expected " + Call(mock, "aMethod")((2, "xyz")) + ", but received:\n" +
@@ -90,13 +90,13 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     intercept[TestFailedException] { 
       mocker.assertNotCalled
     }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-        "  " + Call(mock, "aMethod")((1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod")((1, "abc")))
+        "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
+        "  " + Call(mock, "aMethod")(1, "abc"))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
     }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
-        "  " + Call(mock, "aMethod")((1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod")((1, "abc")))
+        "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
+        "  " + Call(mock, "aMethod")(1, "abc"))
     
     mocker(2, "xyz")
     mocker.assertCalled(1, "abc")
@@ -116,7 +116,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testMockerForUnitFunction {
-    val mocker = Mocker[Int, Unit](mock, "aMethod")
+    val mocker = new Mocker[Int, Unit](mock, "aMethod", new FallbackValue(()))
     val exception = new TestException("testing")
     
     mocker.expect(2) { throw exception }
@@ -126,7 +126,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testMockerForNoArgFunction {
-    val mocker = Mocker[Unit, A](mock, "aMethod")
+    val mocker = new Mocker[Unit, A](mock, "aMethod", NoResponse)
     val exception = new TestException("testing")
     
     mocker.expect() { a1 }

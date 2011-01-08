@@ -1,7 +1,7 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
-class MappedResponder[ArgTuple, Result] extends Responder[ArgTuple, Result] {
+class MappedResponder[Result] extends Responder[Result] {
   
   import scala.collection.mutable.Map
   private val responses: Map[Call, () => Result] = Map()

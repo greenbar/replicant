@@ -18,7 +18,7 @@ class MappedResponderTest extends junit.JUnit3Suite with ShouldMatchers {
   val mock = Mock("aMock")
   
   @Test def testMappedResponder {
-    val responder = new MappedResponder[(Int, String), A]
+    val responder = new MappedResponder[A]
     val call1 = Call(mock, "methodA")(1, "abc")
     val call2 = Call(mock, "methodA")(2, "xyz")
     val call3 = Call(mock, "methodA")(2, "abc")
