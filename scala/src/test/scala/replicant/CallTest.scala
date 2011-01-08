@@ -18,43 +18,50 @@ class CallTest extends junit.JUnit3Suite with ShouldMatchers {
   val mock1 = Mock("mock1")
   val mock2 = Mock("mock2")
   
-  @Test def testToStringWithMultipleArgs {
-    val call = Call(mock1, "methodA", (1, "abc"))
+  @Test def testCallWithNoArgList {
+    val call = Call(mock1, "methodA")
     
-    call.toString should equal(mock1 + ".methodA(1, abc)")
+    call.mock       should equal(mock1)
+    call.methodName should equal("methodA")
+    call.argLists   should equal(Nil)
+    call.toString should equal(mock1 + ".methodA")
   } 
   
-  @Test def testToStringWithSingleArg {
-    val call = Call(mock1, "methodA", (1))
-  
-    call.toString should equal(mock1 + ".methodA(1)")
+  @Test def testCallWithOneArgList {
+    val call = Call(mock1, "methodA")(1, "abc")
+    
+    call.mock       should equal(mock1)
+    call.methodName should equal("methodA")
+    call.argLists   should equal(List(ArgList(1, "abc")))
+    call.toString   should equal(mock1 + ".methodA" + ArgList((1, "abc")))
   } 
   
-  @Test def testToStringWithNoArgs {
-    val call = Call(mock1, "methodA", ())
-  
-    call.toString should equal(mock1 + ".methodA()")
+  @Test def testCallWithSeveralArgLists {
+    val call = Call(mock1, "methodA")(1, "abc")(A(1), B(2))(7)
+    
+    call.mock       should equal(mock1)
+    call.methodName should equal("methodA")
+    call.argLists   should equal(List(ArgList(1, "abc"), ArgList(A(1), B(2)), ArgList(7)))
+    call.toString   should equal(mock1 + ".methodA" + ArgList((1, "abc")) + ArgList(A(1), B(2)) + ArgList(7))
   } 
-  
-//  @Test def testToStringWithMultipleArgLists {
-//    val call = Call(mock1, "methodA", ( (1, "abc"), (A(1), B(1), 1) ))
-//    
-//    call.toString should equal(mock1 + ".methodA(1, abc)(A(1), B(1), 1)")
-//  } 
   
   @Test def testCallEquality {
-    testEqualityOf(   Call(mock1, "methodA", (1, "abc")) ).
-      shouldEqual(    Call(mock1, "methodA", (1, "abc")) ).
-      shouldNotEqual( Call(mock2, "methodA", (1, "abc")) ).
-      shouldNotEqual( Call(mock1, "methodB", (1, "abc")) ).
-      shouldNotEqual( Call(mock1, "methodA", (2, "abc")) ).
-      shouldNotEqual( Call(mock1, "methodA", (1, "xyz")) ).
-      shouldNotEqual( Call(mock1, "methodA", (1))        ).
-      shouldNotEqual( "not a Call"                          )
+    testEqualityOf(   Call(mock1, "methodA") ).
+      shouldEqual(    Call(mock1, "methodA") ).
+      shouldNotEqual( Call(mock2, "methodA") ).
+      shouldNotEqual( Call(mock1, "methodB") ).
+      shouldNotEqual( Call(mock1, "methodA")(1, "abc") ).
+      shouldNotEqual( "not a Call" )
+    testEqualityOf(   Call(mock1, "methodA")(1, "abc")(2) ).
+      shouldEqual(    Call(mock1, "methodA")(1, "abc")(2) ).
+      shouldNotEqual( Call(mock2, "methodA")(1, "abc")(2) ).
+      shouldNotEqual( Call(mock1, "methodB")(1, "abc")(2) ).
+      shouldNotEqual( Call(mock1, "methodA")(2, "abc")(2) ).
+      shouldNotEqual( Call(mock1, "methodA")(1, "xyz")(2) ).
+      shouldNotEqual( Call(mock1, "methodB")(1, "abc")(1) ).
+      shouldNotEqual( Call(mock1, "methodA")(1)           ).
+      shouldNotEqual( Call(mock1, "methodA")              ).
+      shouldNotEqual( "not a Call"                        )
   }
  
-  def noArgList: Int = 7
-  val f: Function0[Int] = noArgList _
-  
-  
 }

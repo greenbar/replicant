@@ -38,7 +38,7 @@ class Mocker[Args, Result](mock: Any, methodName: String, fallback: ResponseFall
   
   private def historyDescription = "received" + (if (called.isEmpty) " no calls" else ":\n  " + called.mkString("\n  "))
 
-  private def callWith(args: Args) = Call(mock, methodName, args)
+  private def callWith(args: Args) = Call(mock, methodName)(args)
   
   private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
   

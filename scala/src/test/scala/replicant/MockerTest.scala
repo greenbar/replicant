@@ -58,7 +58,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker(2) should equal(a2)
     intercept[UnknownResponseException] { 
       mocker(3) 
-    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod", 3) ))
+    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod")(3) ))
   } 
 
   @Test def testRecordingCalls {
@@ -69,7 +69,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertNotCalled
     intercept[TestFailedException] { 
       mocker.assertCalled(2, "xyz")
-    }.message.get should equal("Expected " + Call(mock, "aMethod", (2, "xyz")) + ", but received no calls")
+    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz") + ", but received no calls")
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
     }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received no calls")
@@ -80,23 +80,23 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     intercept[TestFailedException] { 
       mocker.assertNotCalled
     }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-    		"  " + Call(mock, "aMethod", (1, "abc")))
+    		"  " + Call(mock, "aMethod")((1, "abc")))
     intercept[TestFailedException] { 
       mocker.assertCalled(2, "xyz")
-    }.message.get should equal("Expected " + Call(mock, "aMethod", (2, "xyz")) + ", but received:\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")))
+    }.message.get should equal("Expected " + Call(mock, "aMethod")((2, "xyz")) + ", but received:\n" +
+        "  " + Call(mock, "aMethod")(1, "abc"))
     
     mocker(1, "abc")
     intercept[TestFailedException] { 
       mocker.assertNotCalled
     }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")))
+        "  " + Call(mock, "aMethod")((1, "abc")) + "\n" +
+        "  " + Call(mock, "aMethod")((1, "abc")))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
     }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")))
+        "  " + Call(mock, "aMethod")((1, "abc")) + "\n" +
+        "  " + Call(mock, "aMethod")((1, "abc")))
     
     mocker(2, "xyz")
     mocker.assertCalled(1, "abc")
@@ -104,15 +104,15 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     intercept[TestFailedException] { 
       mocker.assertNotCalled
     }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod", (2, "xyz")))
+        "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
+        "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
+        "  " + Call(mock, "aMethod")(2, "xyz"))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
     }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod", (1, "abc")) + "\n" +
-        "  " + Call(mock, "aMethod", (2, "xyz")))
+        "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
+        "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
+        "  " + Call(mock, "aMethod")(2, "xyz"))
   } 
   
   @Test def testMockerForUnitFunction {
