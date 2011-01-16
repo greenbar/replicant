@@ -12,4 +12,6 @@ package object replicant {
   implicit val responseFallbackForDouble : ResponseFallback[Double ] = NoResponse
   implicit val responseFallbackForUnit   : ResponseFallback[Unit   ] = new FallbackValue(())
 
+  implicit def toDeeplyEqualArray[Type](array: Array[Type]): DeeplyEqualArray[Type] = new DeeplyEqualArray(array)
+
 }
