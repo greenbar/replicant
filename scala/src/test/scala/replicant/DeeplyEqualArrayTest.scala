@@ -23,14 +23,13 @@ class DeeplyEqualArrayTest extends junit.JUnit3Suite with ShouldMatchers {
   
   @Test def testDeeplyEqualArray {
     val array1: DeeplyEqualArray[Int] = Array(1, 2, 3)
-    val array2: DeeplyEqualArray[Int] = Array(1, 2, 3)
-    val array3: DeeplyEqualArray[Int] = Array(4, 5, 6)
+    val array2: DeeplyEqualArray[Int] = Array(2, 2, 3)
     
     array1 should equal(array1)
-    array1 should equal(array2)
-    array1 should not equal(array3)
+    array1 should not equal(array2)
     
-    array1.hashCode should equal(array1.hashCode)
+    array2.self(0) = 1
+    array1 should equal(array2)
     array1.hashCode should equal(array2.hashCode)
     
     array1.toString should equal("Array(1, 2, 3)")
