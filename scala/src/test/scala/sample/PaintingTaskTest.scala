@@ -8,6 +8,8 @@ import org.junit._
 import org.junit.runner._
 import testing._
 
+import replicant._
+
 @RunWith(classOf[JUnitRunner])
 class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
 
@@ -18,23 +20,23 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
   @Test def testPaintTask {
     val requestQueue     = new MockRequestQueue
     val painter          = new MockWidgetPainter
-    val widgetRepository = new MockWidgetRepository
+    val widgetRepository = new MockGenericRepository[Widget]
     val paintingTask     = new PaintingTask(requestQueue, painter, widgetRepository);
 
     val requests = scala.collection.mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
     requestQueue.method.nextRequest.expect { requests.dequeue }
-    widgetRepository.method.findWidget.expect(17) (widget1);
-    widgetRepository.method.findWidget.expect(42) (widget2);
-    widgetRepository.method.findWidget.expect(37) (widget3);
-    widgetRepository.method.storeWidget.expect(widget1) { painter.method.paintWidget.assertCalled(widget1) };
-    widgetRepository.method.storeWidget.expect(widget2) { painter.method.paintWidget.assertCalled(widget2) };
-    widgetRepository.method.storeWidget.expect(widget3) { painter.method.paintWidget.assertCalled(widget3) };
+    widgetRepository.method.findById.expect(17) (widget1);
+    widgetRepository.method.findById.expect(42) (widget2);
+    widgetRepository.method.findById.expect(37) (widget3);
+    widgetRepository.method.store.expect(widget1) { painter.method.paintWidget.assertCalled(widget1) };
+    widgetRepository.method.store.expect(widget2) { painter.method.paintWidget.assertCalled(widget2) };
+    widgetRepository.method.store.expect(widget3) { painter.method.paintWidget.assertCalled(widget3) };
 
     paintingTask.run
     
-    widgetRepository.method.storeWidget.assertCalled(widget1);
-    widgetRepository.method.storeWidget.assertCalled(widget2);
-    widgetRepository.method.storeWidget.assertCalled(widget3);
+    widgetRepository.method.store.assertCalled(widget1);
+    widgetRepository.method.store.assertCalled(widget2);
+    widgetRepository.method.store.assertCalled(widget3);
   }
   
   @Test def testOrderingResponses {

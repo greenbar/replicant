@@ -1,12 +1,12 @@
 // Copyright 2011 Kiel Hodges
 package sample
 
-class MockWidgetRepository extends WidgetRepository { mock =>
-  object method {
-    import replicant._
-    val storeWidget = Mocker[Widget, Unit](mock, "storeWidget")
-    val findWidget  = Mocker[Long, Widget](mock, "findWidget")
+import replicant._
+
+class MockWidgetRepository extends MockGenericRepository[Widget] with WidgetRepository { mock =>
+  trait Stub extends super.Stub {
+    val findByPartNumber = Mocker[String, Widget](mock, "findByPartNumber")
   }
-  def storeWidget(widget: Widget) = method.storeWidget(widget)
-  def findWidget(widgetId: Long)  = method.findWidget(widgetId)
+  override val method = new Stub() {}
+  def findByPartNumber(partNumber: String): Widget = null
 }
