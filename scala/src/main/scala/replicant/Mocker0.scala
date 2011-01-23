@@ -8,40 +8,13 @@ object Mocker0 {
     
 }
 
-class Mocker0[Result] private[replicant] (mock: Any, methodName: String, fallback: ResponseFallback[Result]) {
+class Mocker0[Result] private[replicant] (mock: Any, methodName: String, fallback: ResponseFallback[Result]) 
+extends BaseMocker(Call(mock, methodName), fallback) {
   
-  def expect(response: => Result) { responder(call) = response _ }
+  def expect(response: => Result) { expect(call, response) }
   
-  def apply() = {
-    called += call
-    responseFor(call)()
-  }
+  def apply(): Result = apply(call)
   
-  import org.scalatest.Assertions.assert
-  
-  def assertCalled { 
-    assert(called.contains(call), "Expected " + call + ", but " + historyDescription)
-  }
+  def assertCalled { assertCalled(call) }
 
-  def assertCalledOnce { 
-    assert(called.size == 1, 
-           "Expected " + mock + "." + methodName + " to be called once, but " + historyDescription)
-  }
-  
-  def assertNotCalled { 
-    assert(called.isEmpty, 
-           "Expected no calls to " + mock + "." + methodName + ", but " + historyDescription)
-  }
-  
-  private def historyDescription = "received" + (if (called.isEmpty) " no calls" else ":\n  " + called.mkString("\n  "))
-
-  private val call = Call(mock, methodName)
-  
-  private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
-  
-  private val responder = new MappedResponder[Result]()
-  
-  private val called = scala.collection.mutable.ListBuffer[Call]()
-  
 }
-  
