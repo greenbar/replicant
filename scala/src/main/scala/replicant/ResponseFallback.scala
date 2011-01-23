@@ -9,6 +9,6 @@ object NoResponse extends ResponseFallback[Nothing] {
   def apply(exception: UnknownResponseException) = throw exception
 }
 
-class FallbackValue[Result](val value: Result) extends ResponseFallback[Result] {
-  def apply(exception: UnknownResponseException) = () => value
+object UnitFallback extends ResponseFallback[Unit] {
+  def apply(exception: UnknownResponseException) = () => ()
 }

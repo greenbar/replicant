@@ -39,28 +39,6 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     intercept[TestException] { mocker(1, "abc") } should be theSameInstanceAs(exception)
   } 
   
-  @Test def testWithFallbackValue {
-    val mocker = new Mocker[Int, A](mock, "aMethod", new FallbackValue(a3))
-    mocker.expect(1) {a1}
-    mocker.expect(2) {a2}
-    
-    mocker(1) should equal(a1)
-    mocker(2) should equal(a2)
-    mocker(3) should equal(a3)
-  } 
-  
-  @Test def testWithNoResponse {
-    val mocker = new Mocker[Int, A](mock, "aMethod", NoResponse)
-    mocker.expect(1) {a1}
-    mocker.expect(2) {a2}
-    
-    mocker(1) should equal(a1)
-    mocker(2) should equal(a2)
-    intercept[UnknownResponseException] { 
-      mocker(3) 
-    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod")(3) ))
-  } 
-
   @Test def testRecordingCalls {
     val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
     mocker.expect(1, "abc") { a1 }
@@ -114,15 +92,29 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(2, "xyz"))
   } 
-  
+
+  @Test def testWithNoResponse {
+    val mocker = new Mocker[Int, A](mock, "aMethod", NoResponse)
+    mocker.expect(1) {a1}
+    mocker.expect(2) {a2}
+    
+    mocker(1) should equal(a1)
+    mocker(2) should equal(a2)
+    intercept[UnknownResponseException] { 
+      mocker(3) 
+    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod")(3) ))
+  }
+
   @Test def testMockerForUnitFunction {
-    val mocker = new Mocker[Int, Unit](mock, "aMethod", new FallbackValue(()))
+    val mocker = new Mocker[Int, Unit](mock, "aMethod", UnitFallback)
     val exception = new TestException("testing")
     
-    mocker.expect(2) { throw exception }
+    mocker.expect(2) { 7 should equal(7) }
+    mocker.expect(3) { throw exception }
     
     mocker(1)
-    intercept[TestException] { mocker(2) } should be theSameInstanceAs(exception)
+    mocker(2)
+    intercept[TestException] { mocker(3) } should be theSameInstanceAs(exception)
   } 
   
   @Test def testMockerForNoArgFunction {
