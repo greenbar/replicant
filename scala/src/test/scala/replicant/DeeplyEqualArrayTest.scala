@@ -36,7 +36,7 @@ class DeeplyEqualArrayTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
 
   @Test def testReturningValues {
-    val mocker = new Mocker[DeeplyEqualArray[Int], A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[DeeplyEqualArray[Int], A](mock, "aMethod")(NoResponse)
     val array1 = Array(1, 10, 1)
     val array2 = Array(2, 20, 2)
     val array3 = Array(3, 30, 3)
@@ -52,7 +52,7 @@ class DeeplyEqualArrayTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testRecordingCalls {
-    val mocker = new Mocker[DeeplyEqualArray[Int], A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[DeeplyEqualArray[Int], A](mock, "aMethod")(NoResponse)
     val array1 = Array(1, 10, 1)
     val array2 = Array(2, 20, 2)
     val array3 = Array(3, 30, 3)

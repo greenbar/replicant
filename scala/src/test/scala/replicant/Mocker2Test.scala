@@ -22,7 +22,7 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
   private val mock = Mock("aMock")
   
   @Test def testReturningValues {
-    val mocker = new Mocker2[(Int, String), Int, A](mock, "aMethod", NoResponse)
+    val mocker = Mocker2[(Int, String), Int, A](mock, "aMethod")(NoResponse)
     
     mocker.expect(1, "abc")(1) { a1 }
     mocker.expect(1, "abc")(2) { a2 }
@@ -34,7 +34,7 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testThrowingExceptions {
-    val mocker = new Mocker2[(Int, String), Int, A](mock, "aMethod", NoResponse)
+    val mocker = Mocker2[(Int, String), Int, A](mock, "aMethod")(NoResponse)
     val exception = new TestException("testing")
     
     mocker.expect(1, "abc")(2) { throw exception }
@@ -42,7 +42,7 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testRecordingCalls {
-    val mocker = new Mocker2[(Int, String), Int, A](mock, "aMethod", NoResponse)
+    val mocker = Mocker2[(Int, String), Int, A](mock, "aMethod")(NoResponse)
     mocker.expect(1, "abc")(10) { a1 }
     mocker.expect(2, "xyz")(20) { a2 }
     
@@ -104,7 +104,7 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testWithNoResponse {
-    val mocker = new Mocker2[Int, String, A](mock, "aMethod", NoResponse)
+    val mocker = Mocker2[Int, String, A](mock, "aMethod")(NoResponse)
     mocker.expect(1)("a") {a1}
     mocker.expect(2)("b") {a2}
     
@@ -122,7 +122,7 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
   } 
 
   @Test def testMockerForUnitFunction {
-    val mocker = new Mocker2[Int, String, Unit](mock, "aMethod", UnitFallback)
+    val mocker = Mocker2[Int, String, Unit](mock, "aMethod")(UnitFallback)
     val exception = new TestException("testing")
     
     mocker.expect(2)("b") { 7 should equal(7) }

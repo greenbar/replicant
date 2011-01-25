@@ -22,7 +22,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   private val mock = Mock("aMock")
   
   @Test def testReturningValues {
-    val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[(Int, String), A](mock, "aMethod")(NoResponse)
     
     mocker.expect(1, "abc") { a1 }
     mocker.expect(2, "xyz") { a2 }
@@ -32,7 +32,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testThrowingExceptions {
-    val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[(Int, String), A](mock, "aMethod")(NoResponse)
     val exception = new TestException("testing")
     
     mocker.expect(1, "abc") { throw exception }
@@ -40,7 +40,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testRecordingCalls {
-    val mocker = new Mocker[(Int, String), A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[(Int, String), A](mock, "aMethod")(NoResponse)
     mocker.expect(1, "abc") { a1 }
     mocker.expect(2, "xyz") { a2 }
     
@@ -94,7 +94,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
 
   @Test def testWithNoResponse {
-    val mocker = new Mocker[Int, A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[Int, A](mock, "aMethod")(NoResponse)
     mocker.expect(1) {a1}
     mocker.expect(2) {a2}
     
@@ -106,7 +106,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   }
 
   @Test def testMockerForUnitFunction {
-    val mocker = new Mocker[Int, Unit](mock, "aMethod", UnitFallback)
+    val mocker = Mocker[Int, Unit](mock, "aMethod")(UnitFallback)
     val exception = new TestException("testing")
     
     mocker.expect(2) { 7 should equal(7) }
@@ -118,7 +118,7 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testMockerForNoArgFunction {
-    val mocker = new Mocker[Unit, A](mock, "aMethod", NoResponse)
+    val mocker = Mocker[Unit, A](mock, "aMethod")(NoResponse)
     val exception = new TestException("testing")
     
     mocker.expect() { a1 }
