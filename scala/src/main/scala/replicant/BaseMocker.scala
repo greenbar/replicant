@@ -6,13 +6,11 @@ private[replicant] abstract class BaseMocker[Result] (val call: Call, fallback: 
   import org.scalatest.Assertions.assert
   
   def assertCalledOnce { 
-    assert(called.size == 1, 
-           "Expected " + call + " to be called once, but " + historyDescription)
+    assert(called.size == 1, "Expected " + call + " to be called once, but " + historyDescription)
   }
   
   def assertNotCalled { 
-    assert(called.isEmpty, 
-           "Expected no calls to " + call + ", but " + historyDescription)
+    assert(called.isEmpty, "Expected no calls to " + call + ", but " + historyDescription)
   }
 
   protected def expect(call: Call, response: => Result) { responder(call) = response _ }
