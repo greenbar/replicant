@@ -14,9 +14,9 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   import replicant._
   
   case class A(value: Int) 
-  private val a1 = A(1)
-  private val a2 = A(2)
-  private val a3 = A(3)
+  private val result1 = A(1)
+  private val result2 = A(2)
+  private val result3 = A(3)
   
   private case class Mock(name: String) 
   private val mock = Mock("aMock")
@@ -29,19 +29,19 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     val mocker = CallHandler[A](call, NoResponse)
     val exception = new TestException("testing")
     
-    mocker.expect(call1, a1)
-    mocker.expect(call2, a2)
+    mocker.expect(call1, result1)
+    mocker.expect(call2, result2)
     mocker.expect(call3, throw exception)
     
-    mocker(call1) should equal(a1)
-    mocker(call2) should equal(a2)
+    mocker(call1) should equal(result1)
+    mocker(call2) should equal(result2)
     intercept[TestException] { mocker(call3) } should be theSameInstanceAs(exception)
   } 
   
   @Test def testRecordingCalls {
     val mocker = CallHandler[A](call, NoResponse)
-    mocker.expect(call1, a1)
-    mocker.expect(call2, a2)
+    mocker.expect(call1, result1)
+    mocker.expect(call2, result2)
     
     mocker.assertNotCalled
     intercept[TestFailedException] { 
@@ -49,15 +49,15 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     }.message.get should equal("Expected " + call2 + ", but received no calls")
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received no calls")
+    }.message.get should equal("Expected " + call + " to be called once, but received no calls")
     
     mocker(call1)
     mocker.assertCalled(call1)
     mocker.assertCalledOnce
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-    		"  " + call1)
+    }.message.get should equal("Expected no calls to " + call + ", but received:" +
+    		"\n  " + call1)
     intercept[TestFailedException] { 
       mocker.assertCalled(call2)
     }.message.get should equal("Expected " + call2 + ", but received:\n" +
@@ -66,12 +66,12 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker(call1)
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + call + ", but received:\n" +
         "  " + call1 + "\n" +
         "  " + call1)
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
+    }.message.get should equal("Expected " + call + " to be called once, but received:\n" +
         "  " + call1 + "\n" +
         "  " + call1)
     
@@ -80,31 +80,30 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalled(call2)
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + call + ", but received:\n" +
         "  " + call1 + "\n" +
         "  " + call1 + "\n" +
         "  " + call2)
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
-        "  " + call1 + "\n" +
-        "  " + call1 + "\n" +
-        "  " + call2)
-  } 
+    }.message.get should equal("Expected " + call + " to be called once, but received:" + calls(call1, call1, call2))
+  }
+
+  private def calls(calls: Call*): String = calls.map("\n  " + _).mkString
 
   @Test def testWithNoResponse {
     val mocker = CallHandler[A](call, NoResponse)
-    mocker.expect(call1, a1)
-    mocker.expect(call2, a2)
+    mocker.expect(call1, result1)
+    mocker.expect(call2, result2)
     
-    mocker(call1) should equal(a1)
-    mocker(call2) should equal(a2)
+    mocker(call1) should equal(result1)
+    mocker(call2) should equal(result2)
     intercept[UnknownResponseException] { 
       mocker(call3) 
     } should equal(new UnknownResponseException("No response expected for " + call3))
   }
 
-  @Test def testMockerForUnitFunction {
+  @Test def testForUnitFunction {
     val mocker = CallHandler[Unit](call, UnitFallback)
     val exception = new TestException("testing")
     
