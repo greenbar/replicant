@@ -24,8 +24,9 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   private val call1 = call(1, "a")
   private val call2 = call(2, "b")
   private val call3 = call(3, "c")
+  private val call4 = call(4, "d")
 
-  @Test def testResponses {
+  @Test def testResponsesWithNoFallback {
     val mocker = CallHandler[A](call, NoResponse)
     val exception = new TestException("testing")
     
@@ -35,9 +36,30 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     
     mocker(call1) should equal(result1)
     mocker(call2) should equal(result2)
-    intercept[TestException] { mocker(call3) } should be theSameInstanceAs(exception)
+    intercept[TestException] { 
+      mocker(call3) 
+    } should be theSameInstanceAs(exception)
+    intercept[UnknownResponseException] { 
+      mocker(call4) 
+    } should equal(new UnknownResponseException("No response expected for " + call4))
+  }
+
+  @Test def testResponsesWithUnitFunction {
+    val mocker = CallHandler[Unit](call, UnitFallback)
+    val exception = new TestException("testing")
+    
+    mocker.expect(call1, ()) 
+    mocker.expect(call2, 7 should equal(7))
+    mocker.expect(call3, throw exception)
+    
+    mocker(call1)
+    mocker(call2)
+    intercept[TestException] { 
+      mocker(call3) 
+    } should be theSameInstanceAs(exception)
+    mocker(call4)
   } 
-  
+
   @Test def testRecordingCalls {
     val mocker = CallHandler[A](call, NoResponse)
     mocker.expect(call1, result1)
@@ -91,28 +113,4 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
 
   private def calls(calls: Call*): String = calls.map("\n  " + _).mkString
 
-  @Test def testWithNoResponse {
-    val mocker = CallHandler[A](call, NoResponse)
-    mocker.expect(call1, result1)
-    mocker.expect(call2, result2)
-    
-    mocker(call1) should equal(result1)
-    mocker(call2) should equal(result2)
-    intercept[UnknownResponseException] { 
-      mocker(call3) 
-    } should equal(new UnknownResponseException("No response expected for " + call3))
-  }
-
-  @Test def testForUnitFunction {
-    val mocker = CallHandler[Unit](call, UnitFallback)
-    val exception = new TestException("testing")
-    
-    mocker.expect(call2, 7 should equal(7))
-    mocker.expect(call3, throw exception)
-    
-    mocker(call1)
-    mocker(call2)
-    intercept[TestException] { mocker(call3) } should be theSameInstanceAs(exception)
-  } 
-  
 }
