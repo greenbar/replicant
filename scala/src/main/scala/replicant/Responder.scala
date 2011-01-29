@@ -5,5 +5,6 @@ trait Responder[Result] {
   
   def update(call: Call, response: () => Result): Unit
   def apply(call: Call): Either[UnknownResponseException, () => Result]
+  def assertExpectationsMet: Unit
   
 }
