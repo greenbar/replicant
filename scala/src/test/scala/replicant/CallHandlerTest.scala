@@ -78,30 +78,30 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalledOnce
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + call + ", but received:" + calls(call1))
+    }.message.get should equal("Expected no calls to " + call + ", but received " + calls(call1))
     intercept[TestFailedException] { 
       mocker.assertCalled(call2)
-    }.message.get should equal("Expected " + call2 + ", but received:" + calls(call1))
+    }.message.get should equal("Expected " + call2 + ", but received " + calls(call1))
     
     mocker(call1)
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + call + ", but received:" + calls(call1, call1))
+    }.message.get should equal("Expected no calls to " + call + ", but received " + calls(call1, call1))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + call + " to be called once, but received:" + calls(call1, call1))
-    
+    }.message.get should equal("Expected " + call + " to be called once, but received " + calls(call1, call1))
+
     mocker(call2)
     mocker.assertCalled(call1)
     mocker.assertCalled(call2)
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + call + ", but received:" + calls(call1, call1, call2))
+    }.message.get should equal("Expected no calls to " + call + ", but received " + calls(call1, call1, call2))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + call + " to be called once, but received:" + calls(call1, call1, call2))
+    }.message.get should equal("Expected " + call + " to be called once, but received " + calls(call1, call1, call2))
   }
 
-  private def calls(calls: Call*): String = calls.map("\n  " + _).mkString
+  private def calls(calls: Call*): String = Call.describe(calls)
 
 }

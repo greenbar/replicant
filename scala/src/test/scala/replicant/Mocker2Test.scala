@@ -59,30 +59,30 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalledOnce
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
     		"  " + Call(mock, "aMethod")(1, "abc")(10))
     intercept[TestFailedException] { 
       mocker.assertCalled(1, "abc")(20)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(1, "abc")(20) + ", but received:\n" +
+    }.message.get should equal("Expected " + Call(mock, "aMethod")(1, "abc")(20) + ", but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10))
     intercept[TestFailedException] { 
       mocker.assertCalled(2, "xyz")(20)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz")(20) + ", but received:\n" +
+    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz")(20) + ", but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10))
     intercept[TestFailedException] { 
       mocker.assertCalled(2, "xyz")(10)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz")(10) + ", but received:\n" +
+    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz")(10) + ", but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10))
     
     mocker(1, "abc")(10)
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
+    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10))
     
@@ -91,13 +91,13 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalled(2, "xyz")(20)
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
         "  " + Call(mock, "aMethod")(2, "xyz")(20))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
+    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
         "  " + Call(mock, "aMethod")(2, "xyz")(20))

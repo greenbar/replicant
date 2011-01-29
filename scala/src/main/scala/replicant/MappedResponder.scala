@@ -3,15 +3,24 @@ package replicant
 
 class MappedResponder[Result] extends Responder[Result] {
   
-  import scala.collection.mutable.Map
-  private val responses: Map[Call, () => Result] = Map()
+  private val responses = scala.collection.mutable.LinkedHashMap[Call, () => Result]()
+  private var called    = Set[Call]()
 
   def update(call: Call, response: () => Result) { responses(call) = response }
   
-  def apply(call: Call): Either[UnknownResponseException, () => Result] = responses.get(call) match {
-    case Some(response) => Right(response)
-    case None           => Left(new UnknownResponseException("No response expected for " + call))
+  def apply(call: Call): Either[UnknownResponseException, () => Result] = {
+    called += call
+    responses.get(call) match {
+      case Some(response) => Right(response)
+      case None           => Left(new UnknownResponseException("No response expected for " + call))
+    }
   }
   
+  import org.scalatest.Assertions.assert
+
+  def assertExpectationsMet { 
+    val missingCalls = responses.keySet -- called
+    assert(missingCalls.isEmpty, "Expected but did not receive " + Call.describe(missingCalls))
+  }
 }
   

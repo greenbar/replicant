@@ -38,13 +38,14 @@ class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testRecordingCalls {
+    val call = Call(mock, "aMethod")
     val mocker = Mocker0[A](mock, "aMethod")(NoResponse)
     mocker.expect { a1 }
     
     mocker.assertNotCalled
     intercept[TestFailedException] { 
       mocker.assertCalled
-    }.message.get should equal("Expected " + Call(mock, "aMethod") + ", but received no calls")
+    }.message.get should equal("Expected " + call + ", but received no calls")
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
     }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received no calls")
@@ -54,21 +55,18 @@ class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalledOnce
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-    		"  " + Call(mock, "aMethod"))
+    }.message.get should equal("Expected no calls to " + call + ", but received " + calls(call))
     
     mocker()
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
-        "  " + Call(mock, "aMethod") + "\n" +
-        "  " + Call(mock, "aMethod"))
+    }.message.get should equal("Expected no calls to " + call +", but received " + calls(call, call))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
-        "  " + Call(mock, "aMethod") + "\n" +
-        "  " + Call(mock, "aMethod"))
+    }.message.get should equal("Expected " + call + " to be called once, but received " + calls(call, call))
   } 
+  
+  private def calls(calls: Call*): String = Call.describe(calls)
   
   @Test def testWithNoResponse {
     val mocker = Mocker0[A](mock, "aMethod")(NoResponse)

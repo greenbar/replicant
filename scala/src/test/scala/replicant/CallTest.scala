@@ -63,5 +63,16 @@ class CallTest extends junit.JUnit3Suite with ShouldMatchers {
       shouldNotEqual( Call(mock1, "methodA")              ).
       shouldNotEqual( "not a Call"                        )
   }
- 
+
+  @Test def testDescribe {
+    val call1 = Call(mock1, "methodA")(1, "a")
+    val call2 = Call(mock1, "methodA")(2, "b")
+    val call3 = Call(mock1, "methodA")(3, "c")
+    val emptyAlternative = "emptyAlternative"
+      
+    Call.describe(Traversable()) should equal("no calls")
+    Call.describe(Traversable(call1, call2, call3)) should 
+      equal("\n  " + call1 + "\n  " + call2 + "\n  " + call3)
+  } 
+
 }

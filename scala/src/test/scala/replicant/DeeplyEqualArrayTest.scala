@@ -64,7 +64,7 @@ class DeeplyEqualArrayTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalled(array1)
     intercept[TestFailedException] { 
       mocker.assertCalled(array2)
-    }.message.get should equal("Expected " + Call(mock, "aMethod") + "(Array(2, 20, 2))" + ", but received:\n" +
+    }.message.get should equal("Expected " + Call(mock, "aMethod") + "(Array(2, 20, 2))" + ", but received \n" +
         "  " + Call(mock, "aMethod") + "(Array(1, 10, 1))")
   } 
   

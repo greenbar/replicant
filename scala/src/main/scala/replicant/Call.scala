@@ -20,4 +20,9 @@ object Call {
 
   def apply(mock: Any, methodName: String) = new Call(mock, methodName, Nil)
 
+  def describe(calls: Traversable[Call]): String = 
+    if (calls.isEmpty)
+      "no calls"
+    else
+      calls.map("\n  " + _).mkString
 }  

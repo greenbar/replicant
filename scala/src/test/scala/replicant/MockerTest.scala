@@ -57,22 +57,22 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalledOnce
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
     		"  " + Call(mock, "aMethod")(1, "abc"))
     intercept[TestFailedException] { 
       mocker.assertCalled(2, "xyz")
-    }.message.get should equal("Expected " + Call(mock, "aMethod")((2, "xyz")) + ", but received:\n" +
+    }.message.get should equal("Expected " + Call(mock, "aMethod")((2, "xyz")) + ", but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc"))
     
     mocker(1, "abc")
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc"))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
+    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc"))
     
@@ -81,13 +81,13 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers {
     mocker.assertCalled(2, "xyz")
     intercept[TestFailedException] { 
       mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received:\n" +
+    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(2, "xyz"))
     intercept[TestFailedException] { 
       mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received:\n" +
+    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received \n" +
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(1, "abc") + "\n" +
         "  " + Call(mock, "aMethod")(2, "xyz"))
