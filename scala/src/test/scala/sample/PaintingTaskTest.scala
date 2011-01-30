@@ -34,9 +34,7 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
 
     paintingTask.run
     
-    widgetRepository.method.store.assertCalled(widget1);
-    widgetRepository.method.store.assertCalled(widget2);
-    widgetRepository.method.store.assertCalled(widget3);
+    widgetRepository.method.store.assertExpectationsMet
   }
   
   @Test def testOrderingResponses {

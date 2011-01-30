@@ -121,4 +121,22 @@ class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
     intercept[TestFailedException] { mocker.assertCalledOnce } should be theSameInstanceAs(testFailedException)
   } 
   
+  @Test def testAssertExpectationsMet {
+    val callHandler = new TestCallHandler[A] {
+      override def assertExpectationsMet {
+        called = true
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val mocker = new Mocker0[A](call, callHandler)
+    
+    mocker.assertExpectationsMet
+    callHandler.called should equal(true)
+    
+    callHandler.shouldFail = true
+    intercept[TestFailedException] { mocker.assertExpectationsMet } should be theSameInstanceAs(testFailedException)
+  } 
+  
 }

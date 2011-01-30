@@ -17,6 +17,6 @@ class Mocker0[Result] private[replicant] (call: Call, callHandler: CallHandler[R
   def assertCalled                { callHandler.assertCalled(call)     }
   def assertCalledOnce            { callHandler.assertCalledOnce       } 
   def assertNotCalled             { callHandler.assertNotCalled        } 
-
+  def assertExpectationsMet       { callHandler.assertExpectationsMet  }
 
 }
