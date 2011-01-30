@@ -6,7 +6,7 @@ object Mocker {
   def apply[Args, Result](mock: Any, methodName: String)
   (implicit fallback: ResponseFallback[Result]): Mocker[Args, Result] = { 
     val call = Call(mock, methodName)
-    new Mocker(call, new CallHandler(call, fallback))
+    new Mocker(call, CallHandler(call, fallback))
   }
 }
 
