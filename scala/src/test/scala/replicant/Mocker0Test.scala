@@ -16,8 +16,6 @@ class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
   private case class A(value: Int) 
   private case class Mock(name: String) 
 
-  private val mock = Mock("aMock")
-
   private val call = Call(Mock("aMock"), "aMethod")
   private val result1 = A(1)
   private val exception = new Exception("testing")
@@ -90,7 +88,7 @@ class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
     val callHandler = new TestCallHandler[A] {
       override def assertCalled(call: Call) {
         called = true
-        call should equal(call)
+        call should equal(outer.call)
         if (shouldFail) throw testFailedException
       }
       var called = false

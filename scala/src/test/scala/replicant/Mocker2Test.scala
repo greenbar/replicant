@@ -9,132 +9,115 @@ import org.junit.runner._
 import testing._
 
 @RunWith(classOf[JUnitRunner])
-class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers {
+class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
  
   import replicant._
   
   private case class A(value: Int) 
-  private val a1 = A(1)
-  private val a2 = A(2)
-  private val a3 = A(3)
-  
   private case class Mock(name: String) 
-  private val mock = Mock("aMock")
   
-  @Test def testReturningValues {
-    val mocker = Mocker2[(Int, String), Int, A](mock, "aMethod")(NoResponse)
-    
-    mocker.expect(1, "abc")(1) { a1 }
-    mocker.expect(1, "abc")(2) { a2 }
-    mocker.expect(2, "xyz")(1) { a3 }
-    
-    mocker(1, "abc")(1) should equal(a1)
-    mocker(1, "abc")(2) should equal(a2)
-    mocker(2, "xyz")(1) should equal(a3)
+  private val call = Call(Mock("aMock"), "aMethod")
+  private val result1 = A(1)
+  private val exception = new Exception("testing")
+  private val testFailedException = new TestFailedException(1)
+  
+  class TestCallHandler[Result] extends CallHandler[Result] {
+    def expect(call: Call, response: => Result): Unit = notImplemented
+    def apply(call: Call): Result                     = notImplemented
+    def assertExpectationsMet: Unit                   = notImplemented
+    def assertNotCalled: Unit                         = notImplemented
+    def assertCalled(call: Call): Unit                = notImplemented
+    def assertCalledOnce: Unit                        = notImplemented
+    private def notImplemented = fail("not implemented")
+  }
+
+  @Test def testExpect {
+    val callHandler = new TestCallHandler[A] {
+      override def expect(call: Call, response: => A) {
+        call should equal(outer.call(1, "a")(1))
+        this.response = response _
+      }
+      var response: () => A = _
+    }
+    val mocker = new Mocker2[(Int, String), Int, A](call, callHandler)
+
+    mocker.expect(1, "a")(1) { result1 }
+    callHandler.response() should equal(result1)
+
+    mocker.expect(1, "a")(1) { throw exception }
+    intercept[Exception] { callHandler.response() } should be theSameInstanceAs(exception)
   } 
   
-  @Test def testThrowingExceptions {
-    val mocker = Mocker2[(Int, String), Int, A](mock, "aMethod")(NoResponse)
-    val exception = new TestException("testing")
+  @Test def testApply {
+    val callHandler = new TestCallHandler[A] {
+      override def apply(call: Call): A = {
+        call should equal(outer.call(1, "a")(7))
+        response()
+      }
+      var response: () => A = _
+    }
+    val mocker = new Mocker2[(Int, String), Int, A](call, callHandler)
     
-    mocker.expect(1, "abc")(2) { throw exception }
-    intercept[TestException] { mocker(1, "abc")(2) } should be theSameInstanceAs(exception)
-  } 
-  
-  @Test def testRecordingCalls {
-    val mocker = Mocker2[(Int, String), Int, A](mock, "aMethod")(NoResponse)
-    mocker.expect(1, "abc")(10) { a1 }
-    mocker.expect(2, "xyz")(20) { a2 }
+    callHandler.response = () => result1
+    mocker(1, "a")(7) should equal(result1)
     
-    mocker.assertNotCalled
-    intercept[TestFailedException] { 
-      mocker.assertCalled(1, "abc")(10)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(1, "abc")(10) + ", but received no calls")
-    intercept[TestFailedException] { 
-      mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received no calls")
-    
-    mocker(1, "abc")(10)
-    mocker.assertCalled(1, "abc")(10)
-    mocker.assertCalledOnce
-    intercept[TestFailedException] { 
-      mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
-    		"  " + Call(mock, "aMethod")(1, "abc")(10))
-    intercept[TestFailedException] { 
-      mocker.assertCalled(1, "abc")(20)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(1, "abc")(20) + ", but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10))
-    intercept[TestFailedException] { 
-      mocker.assertCalled(2, "xyz")(20)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz")(20) + ", but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10))
-    intercept[TestFailedException] { 
-      mocker.assertCalled(2, "xyz")(10)
-    }.message.get should equal("Expected " + Call(mock, "aMethod")(2, "xyz")(10) + ", but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10))
-    
-    mocker(1, "abc")(10)
-    intercept[TestFailedException] { 
-      mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10))
-    intercept[TestFailedException] { 
-      mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10))
-    
-    mocker(2, "xyz")(20)
-    mocker.assertCalled(1, "abc")(10)
-    mocker.assertCalled(2, "xyz")(20)
-    intercept[TestFailedException] { 
-      mocker.assertNotCalled
-    }.message.get should equal("Expected no calls to " + mock + ".aMethod, but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
-        "  " + Call(mock, "aMethod")(2, "xyz")(20))
-    intercept[TestFailedException] { 
-      mocker.assertCalledOnce
-    }.message.get should equal("Expected " + mock + ".aMethod to be called once, but received \n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
-        "  " + Call(mock, "aMethod")(1, "abc")(10) + "\n" +
-        "  " + Call(mock, "aMethod")(2, "xyz")(20))
-  } 
-  
-  @Test def testWithNoResponse {
-    val mocker = Mocker2[Int, String, A](mock, "aMethod")(NoResponse)
-    mocker.expect(1)("a") {a1}
-    mocker.expect(2)("b") {a2}
-    
-    mocker(1)("a") should equal(a1)
-    mocker(2)("b") should equal(a2)
-    intercept[UnknownResponseException] { 
-      mocker(1)("b") should equal(a3)
-    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod")(1)("b") ))
-    intercept[UnknownResponseException] { 
-      mocker(2)("a") should equal(a3)
-    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod")(2)("a") ))
-    intercept[UnknownResponseException] { 
-      mocker(3)("a") should equal(a3)
-    } should equal(new UnknownResponseException("No response expected for " + Call(mock, "aMethod")(3)("a") ))
+    callHandler.response = () => throw exception
+    intercept[Exception] { mocker(1, "a")(7) } should be theSameInstanceAs(exception)
   } 
 
-  @Test def testMockerForUnitFunction {
-    val mocker = Mocker2[Int, String, Unit](mock, "aMethod")(UnitFallback)
-    val exception = new TestException("testing")
+  @Test def testAssertNotCalled {
+    val callHandler = new TestCallHandler[A] {
+      override def assertNotCalled {
+        called = true
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val mocker = new Mocker2[(Int, String), Int, A](call, callHandler)
     
-    mocker.expect(2)("b") { 7 should equal(7) }
-    mocker.expect(3)("c") { throw exception }
+    mocker.assertNotCalled
+    callHandler.called should equal(true)
     
-    mocker(1)("a")
-    mocker(1)("b")
-    mocker(2)("a")
-    mocker(2)("b")
-    mocker(3)("a")
-    mocker(3)("b")
-    intercept[TestException] { mocker(3)("c") } should be theSameInstanceAs(exception)
+    callHandler.shouldFail = true
+    intercept[TestFailedException] { mocker.assertNotCalled } should be theSameInstanceAs(testFailedException)
+  } 
+
+  @Test def testAssertCalled {
+    val callHandler = new TestCallHandler[A] {
+      override def assertCalled(call: Call) {
+        called = true
+        call should equal(outer.call(1, "a")(7))
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val mocker = new Mocker2[(Int, String), Int, A](call, callHandler)
+    
+    mocker.assertCalled(1, "a")(7)
+    callHandler.called should equal(true)
+    
+    callHandler.shouldFail = true
+    intercept[TestFailedException] { mocker.assertCalled(1, "a")(7) } should be theSameInstanceAs(testFailedException)
   } 
   
+  @Test def testAssertCalledOnce {
+    val callHandler = new TestCallHandler[A] {
+      override def assertCalledOnce {
+        called = true
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val mocker = new Mocker2[(Int, String), Int, A](call, callHandler)
+    
+    mocker.assertCalledOnce
+    callHandler.called should equal(true)
+    
+    callHandler.shouldFail = true
+    intercept[TestFailedException] { mocker.assertCalledOnce } should be theSameInstanceAs(testFailedException)
+  } 
+
 }
