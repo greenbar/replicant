@@ -2,14 +2,12 @@
 package replicant
 
 private[replicant] trait CallHandler[Result] {
-
   def expect(call: Call, response: => Result): Unit
   def apply(call: Call): Result
   def assertExpectationsMet: Unit
   def assertNotCalled: Unit
   def assertCalled(call: Call): Unit
   def assertCalledOnce: Unit
-
 }
 
 object CallHandler {
@@ -18,7 +16,7 @@ object CallHandler {
 }
 
 private[replicant] class StandardCallHandler[Result](
-    call: Call, 
+    baseCall: Call, 
     responder: Responder[Result], 
     fallback: ResponseFallback[Result]
 ) extends CallHandler[Result] {
@@ -37,7 +35,7 @@ private[replicant] class StandardCallHandler[Result](
   import org.scalatest.Assertions.assert
   
   def assertNotCalled { 
-    assert(called.isEmpty, "Expected no calls to " + call + ", but received " + describe(called))
+    assert(called.isEmpty, "Expected no calls to " + baseCall + ", but received " + describe(called))
   }
 
   def assertCalled(call: Call) { 
@@ -45,7 +43,7 @@ private[replicant] class StandardCallHandler[Result](
   }
 
   def assertCalledOnce { 
-    assert(called.size == 1, "Expected " + call + " to be called once, but received " + describe(called))
+    assert(called.size == 1, "Expected " + baseCall + " to be called once, but received " + describe(called))
   }
   
   private def describe(calls: Iterable[Call]): String = Call.describe(calls) 
