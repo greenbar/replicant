@@ -26,7 +26,7 @@ final class OrderedResponder<ReturnValue> implements Responder<ReturnValue> {
   }
 
   public boolean equals(Object object) {
-    if (object instanceof OrderedResponder) {
+    if (object instanceof OrderedResponder<?>) {
       OrderedResponder<?> that = (OrderedResponder<?>) object;
       return this.results.equals(that.results);
     }
