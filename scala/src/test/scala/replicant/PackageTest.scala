@@ -9,7 +9,7 @@ import org.junit.runner._
 import testing._
 
 @RunWith(classOf[JUnitRunner])
-class ReplicantTest extends junit.JUnit3Suite with ShouldMatchers {
+class PackageTest extends junit.JUnit3Suite with ShouldMatchers {
  
   private case class A() 
 
