@@ -17,8 +17,7 @@ final class StrictExpectationEnforcer implements ExpectationEnforcer, Expecter {
   }
   
   public void call(Call call) throws AssertionFailedError {
-    // TODO Must throw a better exception when pendingCalls is empty
-    if (!pendingCalls.get(0).equals(call))
+    if (pendingCalls.isEmpty() || !pendingCalls.get(0).equals(call))
       fail(stateMessage(new StringBuilder("Unexpected call: ").append(call)));
     
     receivedCalls.add(pendingCalls.remove(0));
@@ -33,7 +32,9 @@ final class StrictExpectationEnforcer implements ExpectationEnforcer, Expecter {
     for (Call receivedCall : receivedCalls)
       builder.append("\n  Received ").append(receivedCall);
     builder.append("\n");
-    for (Call pendingCall : pendingCalls)
+    if (pendingCalls.isEmpty())
+      builder.append("\n  Awaiting no further calls");
+    else for (Call pendingCall : pendingCalls)
       builder.append("\n  Awaiting ").append(pendingCall);
     return builder.toString();
   }

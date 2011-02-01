@@ -57,6 +57,28 @@ public class StrictExpectationEnforcerTest extends TestCase {
                  assertionFailedError.getMessage());
   }
   
+  public void testExpecterWhenUnexpectedCallMadeAfterAllExpectedCallsExhausted() throws Exception {
+    enforcer.expect(CALL1);
+    enforcer.expect(CALL2);
+    enforcer.call(CALL1);
+    enforcer.call(CALL2);
+    
+    AssertionFailedError assertionFailedError = null;
+    try {
+      enforcer.call(CALL3);
+    } catch (AssertionFailedError e) {
+      assertionFailedError = e;
+    }
+    assertNotNull("AssertionFailedError not thrown as expected", assertionFailedError);
+    assertEquals("Unexpected call: " + CALL3 +
+        "\n  Received " + CALL1 +
+        "\n  Received " + CALL2 +
+        "\n" +
+        "\n  Awaiting no further calls",
+        assertionFailedError.getMessage());
+  }
+
+  
   public void testExpecterWhenExpectedCallNeverMade() throws Exception {
     enforcer.expect(CALL1);
     enforcer.expect(CALL2);
