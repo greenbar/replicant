@@ -13,24 +13,12 @@ class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
  
   import replicant._
   
-  private case class A(value: Int) 
   private case class Mock(name: String) 
 
   private val call = Call(Mock("aMock"), "aMethod")
   private val result1 = A(1)
   private val exception = new Exception("testing")
   private val testFailedException = new TestFailedException(1)
-
-  class TestCallHandler[Result] extends CallHandler[Result] {
-    def expect(call: Call, response: => Result): Unit = notImplemented
-    def apply(call: Call): Result                     = notImplemented
-    def assertExpectationsMet: Unit                   = notImplemented
-    def assertNotCalled: Unit                         = notImplemented
-    def assertCalled(call: Call): Unit                = notImplemented
-    def assertCalledOnce: Unit                        = notImplemented
-    private def notImplemented = fail("not implemented")
-  }
-
 
   @Test def testExpect {
     val callHandler = new TestCallHandler[A] {

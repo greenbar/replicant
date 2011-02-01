@@ -13,14 +13,12 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
  
   import replicant._
   
-  class TestResponder[Result] extends Responder[Result] {
+  class TestResponder[Result] extends Responder[Result] with testing.NotImplemented {
     def update(call: Call, response: () => Result): Unit                  = notImplemented
     def apply(call: Call): Either[UnknownResponseException, () => Result] = notImplemented
     def assertExpectationsMet: Unit                                       = notImplemented
-    private def notImplemented = fail("not implemented")
   }
   
-  case class A(value: Int) 
   private val result1 = A(1)
   private val result2 = A(2)
   private val result3 = A(3)

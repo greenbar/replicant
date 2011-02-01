@@ -13,7 +13,6 @@ class DeeplyEqualArrayTest extends junit.JUnit3Suite with ShouldMatchers {
  
   import replicant._
   
-  private case class A(value: Int) 
   private val a1 = A(1)
   private val a2 = A(2)
   private val a3 = A(3)

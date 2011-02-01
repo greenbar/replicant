@@ -11,9 +11,6 @@ import testing._
 @RunWith(classOf[JUnitRunner])
 class ArgListTest extends junit.JUnit3Suite with ShouldMatchers {
 
-  case class A(value: Int)
-  case class B(value: Int)
-  
   @Test def testToStringWithMultipleArgs {
     val argList: ArgList = ArgList(1, "abc")
     

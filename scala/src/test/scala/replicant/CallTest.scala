@@ -11,9 +11,6 @@ import testing._
 @RunWith(classOf[JUnitRunner])
 class CallTest extends junit.JUnit3Suite with ShouldMatchers {
 
-  case class A(value: Int)
-  case class B(value: Int)
-  
   case class Mock(name: String) 
   val mock1 = Mock("mock1")
   val mock2 = Mock("mock2")

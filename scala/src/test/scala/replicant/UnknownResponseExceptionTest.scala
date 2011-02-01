@@ -11,8 +11,6 @@ import testing._
 @RunWith(classOf[JUnitRunner])
 class UnknownResponseExceptionTest extends junit.JUnit3Suite with ShouldMatchers {
  
-  private case class A(value: Int) 
-  
   @Test def testUnknownResponseException {
     val exception = new UnknownResponseException("message");
     

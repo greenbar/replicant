@@ -11,8 +11,6 @@ import testing._
 @RunWith(classOf[JUnitRunner])
 class PackageTest extends junit.JUnit3Suite with ShouldMatchers {
  
-  private case class A() 
-
   @Test def testImplicitResponseFallbacks {
     verifyUnitResponseFallback
     verifyNoResponseFallback[Boolean]
