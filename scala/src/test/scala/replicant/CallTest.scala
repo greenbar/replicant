@@ -29,8 +29,8 @@ class CallTest extends junit.JUnit3Suite with ShouldMatchers {
     
     call.mock       should equal(mock1)
     call.methodName should equal("methodA")
-    call.argLists   should equal(List(ArgList(1, "abc")))
-    call.toString   should equal(mock1 + ".methodA" + ArgList((1, "abc")))
+    call.argLists   should equal(List(ArgListValue(1, "abc")))
+    call.toString   should equal(mock1 + ".methodA" + ArgListValue((1, "abc")))
   } 
   
   @Test def testCallWithSeveralArgLists {
@@ -38,8 +38,8 @@ class CallTest extends junit.JUnit3Suite with ShouldMatchers {
     
     call.mock       should equal(mock1)
     call.methodName should equal("methodA")
-    call.argLists   should equal(List(ArgList(1, "abc"), ArgList(A(1), B(2)), ArgList(7)))
-    call.toString   should equal(mock1 + ".methodA" + ArgList((1, "abc")) + ArgList(A(1), B(2)) + ArgList(7))
+    call.argLists   should equal(List(ArgListValue(1, "abc"), ArgListValue(A(1), B(2)), ArgListValue(7)))
+    call.toString   should equal(mock1 + ".methodA" + ArgListValue((1, "abc")) + ArgListValue(A(1), B(2)) + ArgListValue(7))
   } 
   
   @Test def testCallEquality {

@@ -1,9 +1,9 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
-sealed class Call private(val mock: Any, val methodName: String, val argLists: List[ArgList]) {
+sealed class Call private(val mock: Any, val methodName: String, val argLists: List[ArgListValue]) {
   
-  def apply(args: Any) = new Call(mock, methodName, this.argLists :+ ArgList(args)) 
+  def apply(args: Any) = new Call(mock, methodName, this.argLists :+ ArgListValue(args)) 
   
   override def equals(other: Any) = other match {
     case that: Call => this.mock == that.mock && this.methodName == that.methodName && this.argLists == that.argLists   

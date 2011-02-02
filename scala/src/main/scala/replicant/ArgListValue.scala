@@ -1,7 +1,7 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
-case class ArgList(args: Any) {
+case class ArgListValue(args: Any) {
   
   override def toString = "(" + describe(args) + ")"
   
