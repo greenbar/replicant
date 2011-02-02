@@ -21,16 +21,21 @@ class ArgListTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
   
   val baseCall = Call(Mock("aMock"), "aMethod")
   
-  class TestReplicant extends Replicant[TestReplicant] {
-    private[replicant] def withArgs[NewArgs](args: NewArgs) = {
-      args should equal((1, "a"))
-      withArgs
-    }
-    var withArgs: TestReplicant = _
+  class TestReplicant extends Replicant[TestReplicant] with NotImplemented {
+    def assertCalledOnce()       { notImplemented }
+    def assertNotCalled()        { notImplemented }
+    def assertAllResponsesUsed() { notImplemented }
+    private[replicant] def withArgs[NewArgs](args: NewArgs): TestReplicant = notImplemented
   }
   
   @Test def testWithArgs {
-    val next = new TestReplicant
+    val next = new TestReplicant {
+      override private[replicant] def withArgs[NewArgs](args: NewArgs): TestReplicant = {
+        args should equal((1, "a"))
+        withArgs
+      }
+      var withArgs: TestReplicant = _
+    }
     next.withArgs = new TestReplicant
     val argList: ArgList[(Int, String), TestReplicant] = ArgList(next)
     
@@ -40,12 +45,72 @@ class ArgListTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
   } 
 
   @Test def testArgListApply {
-    val next = new TestReplicant
+    val next = new TestReplicant {
+      override private[replicant] def withArgs[NewArgs](args: NewArgs): TestReplicant = {
+        args should equal((1, "a"))
+        withArgs
+      }
+      var withArgs: TestReplicant = _
+    }
     next.withArgs = new TestReplicant
     val argList: ArgList[(Int, String), TestReplicant] = ArgList(next)
     
     argList(1, "a") should equal(next.withArgs)
   }
+
+  @Test def testAssertNotCalled {
+    val next = new TestReplicant {
+      override def assertNotCalled() {
+        called = true
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val argList: ArgList[(Int, String), TestReplicant] = ArgList(next)
+    
+    argList.assertNotCalled()
+    next.called should equal(true)
+    
+    next.shouldFail = true
+    intercept[TestFailedException] { argList.assertNotCalled() } should be theSameInstanceAs(testFailedException)
+  } 
+  
+  @Test def testAssertCalledOnce {
+    val next = new TestReplicant {
+      override def assertCalledOnce() {
+        called = true
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val argList: ArgList[(Int, String), TestReplicant] = ArgList(next)
+    
+    argList.assertCalledOnce()
+    next.called should equal(true)
+    
+    next.shouldFail = true
+    intercept[TestFailedException] { argList.assertCalledOnce() } should be theSameInstanceAs(testFailedException)
+  } 
+  
+  @Test def testAssertAllResponsesUsed {
+    val next = new TestReplicant {
+      override def assertAllResponsesUsed() {
+        called = true
+        if (shouldFail) throw testFailedException
+      }
+      var called = false
+      var shouldFail = false
+    }
+    val argList: ArgList[(Int, String), TestReplicant] = ArgList(next)
+    
+    argList.assertAllResponsesUsed()
+    next.called should equal(true)
+    
+    next.shouldFail = true
+    intercept[TestFailedException] { argList.assertAllResponsesUsed() } should be theSameInstanceAs(testFailedException)
+  } 
 
   @Test def testArgListEquality {
     val next1 = new TestReplicant

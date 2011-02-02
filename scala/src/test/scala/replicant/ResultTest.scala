@@ -74,11 +74,11 @@ class ResultTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
     }
     val result: Result[A] = Result(call1, callHandler)
     
-    result.assertNotCalled
+    result.assertNotCalled()
     callHandler.called should equal(true)
     
     callHandler.shouldFail = true
-    intercept[TestFailedException] { result.assertNotCalled } should be theSameInstanceAs(testFailedException)
+    intercept[TestFailedException] { result.assertNotCalled() } should be theSameInstanceAs(testFailedException)
   } 
   
   @Test def testAssertCalled {
@@ -93,11 +93,11 @@ class ResultTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
     }
     val result: Result[A] = Result(call1, callHandler)
     
-    result.assertCalled
+    result.assertCalled()
     callHandler.called should equal(true)
     
     callHandler.shouldFail = true
-    intercept[TestFailedException] { result.assertCalled } should be theSameInstanceAs(testFailedException)
+    intercept[TestFailedException] { result.assertCalled() } should be theSameInstanceAs(testFailedException)
   } 
   
   @Test def testAssertCalledOnce {
@@ -111,11 +111,11 @@ class ResultTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
     }
     val result: Result[A] = Result(call1, callHandler)
     
-    result.assertCalledOnce
+    result.assertCalledOnce()
     callHandler.called should equal(true)
     
     callHandler.shouldFail = true
-    intercept[TestFailedException] { result.assertCalledOnce } should be theSameInstanceAs(testFailedException)
+    intercept[TestFailedException] { result.assertCalledOnce() } should be theSameInstanceAs(testFailedException)
   } 
   
   @Test def testAssertAllResponsesUsed {
@@ -129,11 +129,11 @@ class ResultTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
     }
     val result: Result[A] = Result(call1, callHandler)
     
-    result.assertAllResponsesUsed
+    result.assertAllResponsesUsed()
     callHandler.called should equal(true)
     
     callHandler.shouldFail = true
-    intercept[TestFailedException] { result.assertAllResponsesUsed } should be theSameInstanceAs(testFailedException)
+    intercept[TestFailedException] { result.assertAllResponsesUsed() } should be theSameInstanceAs(testFailedException)
   } 
 
   @Test def testResultEquality {
