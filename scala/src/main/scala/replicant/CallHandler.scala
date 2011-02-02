@@ -16,9 +16,9 @@ object CallHandler {
 }
 
 private[replicant] class StandardCallHandler[Result](
-    baseCall: Call, 
-    responder: Responder[Result], 
-    fallback: ResponseFallback[Result]
+    private val baseCall: Call, 
+    private val responder: Responder[Result], 
+    private val fallback: ResponseFallback[Result]
 ) extends CallHandler[Result] {
   
   def expect(call: Call, response: => Result) { 
@@ -51,5 +51,16 @@ private[replicant] class StandardCallHandler[Result](
   private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
 
   private val called = scala.collection.mutable.ListBuffer[Call]()
+  
+  override def equals(other: Any) = other match {
+    case that: StandardCallHandler[_] => this.baseCall == that.baseCall && 
+                                         this.responder == that.responder && 
+                                         this.fallback == that.fallback
+    case _ => false
+  }
+  
+  override def hashCode = 41 * (41 * (41 + baseCall.hashCode) + responder.hashCode) + fallback.hashCode 
+
+  override def toString = "StandardCallHandler(" + baseCall + ", " + responder + ", " + fallback + ')'
   
 }

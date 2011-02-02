@@ -54,4 +54,10 @@ class MappedResponderTest extends junit.JUnit3Suite with ShouldMatchers {
     responder.assertExpectationsMet
   } 
   
+  @Test def testMappedResponderEquality {
+    testEqualityOf(   new MappedResponder[A] ).
+      shouldEqual(    new MappedResponder[A] ).
+      shouldNotEqual( "not a MappedResponder" )
+  } 
+
 }

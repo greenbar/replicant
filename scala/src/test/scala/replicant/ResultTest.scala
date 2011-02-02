@@ -136,7 +136,7 @@ class ResultTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
     intercept[TestFailedException] { result.assertAllResponsesUsed } should be theSameInstanceAs(testFailedException)
   } 
 
-    @Test def testResultEquality {
+  @Test def testResultEquality {
     val callHandler1 = new TestCallHandler[A]
     val callHandler2 = new TestCallHandler[A]
     testEqualityOf(   Result(call1, callHandler1) ).

@@ -100,6 +100,19 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     } should be theSameInstanceAs(exception)
   }
   
+  @Test def testStandardCallHandlerEquality {
+    val responder1 = new TestResponder[Unit]
+    val responder2 = new TestResponder[Unit]
+    val fallback1 = NoResponse
+    val fallback2 = UnitFallback
+    testEqualityOf(   new StandardCallHandler(call1, responder1, fallback1) ).
+      shouldEqual(    new StandardCallHandler(call1, responder1, fallback1) ).
+      shouldNotEqual( new StandardCallHandler(call2, responder1, fallback1) ).
+      shouldNotEqual( new StandardCallHandler(call1, responder2, fallback1) ).
+      shouldNotEqual( new StandardCallHandler(call1, responder1, fallback2) ).
+      shouldNotEqual( "not a CallHandler" )
+  } 
+
   @Test def testRecordingCalls {
     val handler = CallHandler[A](baseCall, NoResponse)
     handler.expect(call1, result1)

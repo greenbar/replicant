@@ -22,5 +22,13 @@ class MappedResponder[Result] extends Responder[Result] {
     val missingCalls = responses.keySet -- called
     assert(missingCalls.isEmpty, "Expected but did not receive " + Call.describe(missingCalls))
   }
+  
+  override def equals(other: Any) = other match {
+    case that: MappedResponder[_] => true 
+    case _ => false
+  }
+
+  override def hashCode = 37
+
 }
   
