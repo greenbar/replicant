@@ -2,6 +2,7 @@
 package sample2
 
 import replicant._
+import experiment1._
 
 class MockWidgetRepository extends MockGenericRepository[Widget] with WidgetRepository { mock =>
   trait Stub extends super.Stub {

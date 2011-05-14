@@ -4,6 +4,7 @@ package sample2
 class MockWidgetPainter extends WidgetPainter { mock =>
   object method {
     import replicant._
+    import experiment1._
     val paintWidget: ArgList[Widget, Result[Unit]] = Replicant.with1ArgList(mock, "paintWidget")
   }
   def paintWidget(widget: Widget) = method.paintWidget(widget).response

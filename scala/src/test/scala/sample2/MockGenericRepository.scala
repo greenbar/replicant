@@ -2,6 +2,7 @@
 package sample2
 
 import replicant._
+import experiment1._
 
 class MockGenericRepository[Subject](implicit fallback: ResponseFallback[Subject]) 
 extends GenericRepository[Subject] { mock =>

@@ -1,5 +1,5 @@
 // Copyright 2011 Kiel Hodges
-package replicant
+package replicant.experiment1
 
 case class ArgList[Args, Next <: Replicant[Next]](private val next: Next) extends Replicant[ArgList[Args, Next]] {
 
@@ -9,7 +9,7 @@ case class ArgList[Args, Next <: Replicant[Next]](private val next: Next) extend
   def assertNotCalled()        { next.assertNotCalled        } 
   def assertAllResponsesUsed() { next.assertAllResponsesUsed } 
 
-  private[replicant] def withArgs[NewArgs](newArgs: NewArgs): ArgList[Args, Next] = new ArgList(next.withArgs(newArgs))
+  private[experiment1] def withArgs[NewArgs](newArgs: NewArgs): ArgList[Args, Next] = new ArgList(next.withArgs(newArgs))
 
 }
   

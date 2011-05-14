@@ -25,13 +25,15 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
 
     val requests = scala.collection.mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
     requestQueue.method.nextRequest.expect { requests.dequeue }
-    widgetRepository.method.findById.expect(17) (widget1);
-    widgetRepository.method.findById.expect(42) (widget2);
-    widgetRepository.method.findById.expect(37) (widget3);
-    widgetRepository.method.store.expect(widget1) { painter.method.paintWidget.assertCalled(widget1) };
-    widgetRepository.method.store.expect(widget2) { painter.method.paintWidget.assertCalled(widget2) };
-    widgetRepository.method.store.expect(widget3) { painter.method.paintWidget.assertCalled(widget3) };
-
+    locally {
+      import widgetRepository.method._
+      findById.expect(17) {widget1};
+      findById.expect(42) {widget2};
+      findById.expect(37) {widget3};
+      for (widget <- List(widget1, widget2, widget3))
+        store.expect(widget) { painter.method.paintWidget.assertCalled(widget) };
+    }
+    
     paintingTask.run
     
     widgetRepository.method.store.assertExpectationsMet
