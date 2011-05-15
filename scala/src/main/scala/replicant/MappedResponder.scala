@@ -8,7 +8,7 @@ class MappedResponder[Result] extends Responder[Result] {
 
   def update(call: Call, response: () => Result) { responses(call) = response }
   
-  def responseFor(call: Call): Response[Result] = {
+  def apply(call: Call): Response[Result] = {
     called += call
     responses.get(call) match {
       case Some(response) => ValueResponse(response) 

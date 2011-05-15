@@ -29,9 +29,9 @@ class MappedResponderTest extends junit.JUnit3Suite with ShouldMatchers {
     responder(call1) = f1
     responder(call2) = f2
 
-    responder.responseFor(call1) should equal(ValueResponse(f1))
-    responder.responseFor(call2) should equal(ValueResponse(f2))
-    responder.responseFor(call3) should equal(UnknownResponse("No response expected for " + call3))
+    responder(call1) should equal(ValueResponse(f1))
+    responder(call2) should equal(ValueResponse(f2))
+    responder(call3) should equal(UnknownResponse("No response expected for " + call3))
   } 
   
   @Test def testAssertExpectationsMet {
@@ -45,14 +45,14 @@ class MappedResponderTest extends junit.JUnit3Suite with ShouldMatchers {
       responder.assertExpectationsMet
     }.message.get should equal("Expected but did not receive " + Call.describe(Set(call1, call2, call3))) 
 
-    responder.responseFor(call2)
-    responder.responseFor(call1)
-    responder.responseFor(call2)
+    responder(call2)
+    responder(call1)
+    responder(call2)
     intercept[TestFailedException] { 
       responder.assertExpectationsMet
     }.message.get should equal("Expected but did not receive " + Call.describe(Set(call3))) 
 
-    responder.responseFor(call3)
+    responder(call3)
     responder.assertExpectationsMet
   } 
   

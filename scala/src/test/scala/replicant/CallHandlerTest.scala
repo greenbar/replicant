@@ -15,7 +15,7 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   
   class TestResponder[Result] extends Responder[Result] with testing.NotImplemented {
     def update(call: Call, response: () => Result): Unit                  = notImplemented
-    def responseFor(call: Call): Response[Result]                         = notImplemented
+    def apply(call: Call): Response[Result]                         = notImplemented
     def assertExpectationsMet: Unit                                       = notImplemented
   }
   
@@ -48,7 +48,7 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   
   @Test def testApplyWithNoFallbackWhenResponderReturnsResponse {
     val responder = new TestResponder[A] {
-      override def responseFor(call: Call): Response[A] = {
+      override def apply(call: Call): Response[A] = {
         call should equal(call1)
         ValueResponse(() => result1)
       }
@@ -61,7 +61,7 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   @Test def testApplyWithNoFallbackWhenResponderReturnsUnknownResponseException {
     val message = "message"
     val responder = new TestResponder[A] {
-      override def responseFor(call: Call): Response[A] = {
+      override def apply(call: Call): Response[A] = {
         call should equal(call1)
         UnknownResponse(message)
       }
@@ -75,7 +75,7 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   
   @Test def testApplyWithUnitFallbackWhenResponderReturnsUnknownResponseException {
     val responder = new TestResponder[Unit] {
-      override def responseFor(call: Call): Response[Unit] = {
+      override def apply(call: Call): Response[Unit] = {
         call should equal(call1)
         UnknownResponse("message")
       }

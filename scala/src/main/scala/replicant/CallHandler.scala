@@ -27,7 +27,7 @@ private[replicant] class StandardCallHandler[Result](
 
   def apply(call: Call): Result = {
     called += call
-    responder.responseFor(call).value(fallback)
+    responder(call).value(fallback)
   }
 
   def assertExpectationsMet { responder.assertExpectationsMet }
