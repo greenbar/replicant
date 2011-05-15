@@ -16,9 +16,9 @@ private object CallHandler {
 }
 
 private[replicant] class StandardCallHandler[Result](
-    private val baseCall: Call, 
-    private val responder: Responder[Result], 
-    private val fallback: ResponseFallback[Result]
+    baseCall: Call, 
+    responder: Responder[Result], 
+    fallback: ResponseFallback[Result]
 ) extends CallHandler[Result] {
   
   def update(call: Call, response: => Result) { responder(call) = response _ }
@@ -46,15 +46,16 @@ private[replicant] class StandardCallHandler[Result](
   }
   
   private val called = scala.collection.mutable.ListBuffer[Call]()
-  
+
+
+  private val equalityKey = (baseCall, responder, fallback)
+
   override def equals(other: Any) = other match {
-    case that: StandardCallHandler[_] => this.baseCall == that.baseCall && 
-                                         this.responder == that.responder && 
-                                         this.fallback == that.fallback
+    case that: StandardCallHandler[_] => this.equalityKey == that.equalityKey
     case _ => false
   }
   
-  override def hashCode = 41 * (41 * (41 + baseCall.hashCode) + responder.hashCode) + fallback.hashCode 
+  override def hashCode = equalityKey.hashCode 
 
   override def toString = "StandardCallHandler(" + baseCall + ", " + responder + ", " + fallback + ')'
   

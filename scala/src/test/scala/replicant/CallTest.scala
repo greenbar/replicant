@@ -15,31 +15,24 @@ class CallTest extends junit.JUnit3Suite with ShouldMatchers {
   val mock1 = Mock("mock1")
   val mock2 = Mock("mock2")
   
-  @Test def testCallWithNoArgList {
-    val call = Call(mock1, "methodA")
-    
-    call.mock       should equal(mock1)
-    call.methodName should equal("methodA")
-    call.argLists   should equal(Nil)
-    call.toString should equal(mock1 + ".methodA")
+  @Test def testCallApply {
+    val call1 = Call(mock1, "methodA")
+    val call2 = call1(1, "abc")
+    val call3 = call2(A(1), B(2))(7)
+
+    call1 should equal(Call(mock1, "methodA"))
+    call2 should equal(Call(mock1, "methodA")(1, "abc"))
+    call3 should equal(Call(mock1, "methodA")(1, "abc")(A(1), B(2))(7)) 
   } 
   
-  @Test def testCallWithOneArgList {
-    val call = Call(mock1, "methodA")(1, "abc")
-    
-    call.mock       should equal(mock1)
-    call.methodName should equal("methodA")
-    call.argLists   should equal(List(ArgListValue(1, "abc")))
-    call.toString   should equal(mock1 + ".methodA" + ArgListValue((1, "abc")))
-  } 
-  
-  @Test def testCallWithSeveralArgLists {
-    val call = Call(mock1, "methodA")(1, "abc")(A(1), B(2))(7)
-    
-    call.mock       should equal(mock1)
-    call.methodName should equal("methodA")
-    call.argLists   should equal(List(ArgListValue(1, "abc"), ArgListValue(A(1), B(2)), ArgListValue(7)))
-    call.toString   should equal(mock1 + ".methodA" + ArgListValue((1, "abc")) + ArgListValue(A(1), B(2)) + ArgListValue(7))
+  @Test def testCallToString {
+    Call(mock1, "methodA").toString                          should equal(mock1 + ".methodA")
+    Call(mock1, "methodA")(1, "abc").toString                should equal(mock1 + ".methodA" + 
+                                                                          ArgListValue((1, "abc")))
+    Call(mock1, "methodA")(1, "abc")(A(1), B(2))(7).toString should equal(mock1 + ".methodA" + 
+                                                                          ArgListValue((1, "abc")) + 
+                                                                          ArgListValue(A(1), B(2)) + 
+                                                                          ArgListValue(7))
   } 
   
   @Test def testCallEquality {
