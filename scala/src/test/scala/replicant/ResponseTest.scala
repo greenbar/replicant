@@ -39,7 +39,6 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
   } 
   
   @Test def testUnknownResponseWithUnitFallback {
-    var x = ""
     val response: Response[Unit] = new UnknownResponse(errorDescription)
     
     response.value(UnitFallback) should be(())

@@ -14,6 +14,6 @@ private class ValueResponse[Result](value: () => Result) extends Response[Result
 
 private class UnknownResponse[Result](description: String) extends Response[Result] {
   
-  def value(fallback: ResponseFallback[Result]): Result = fallback(new UnknownResponseException(description))()
+  def value(fallback: ResponseFallback[Result]): Result = fallback(description)
   
 }
