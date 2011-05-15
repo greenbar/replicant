@@ -13,7 +13,7 @@ object Mocker0 {
 class Mocker0[Result] private[replicant] (call: Call, callHandler: CallHandler[Result]) { 
   
   def apply(): Result = callHandler(call)
-  def expect(response: => Result) { callHandler.expect(call, response) }
+  def expect(response: => Result) { callHandler(call) = response       }
   def assertCalled                { callHandler.assertCalled(call)     }
   def assertCalledOnce            { callHandler.assertCalledOnce       } 
   def assertNotCalled             { callHandler.assertNotCalled        } 

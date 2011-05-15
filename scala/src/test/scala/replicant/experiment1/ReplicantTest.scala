@@ -48,7 +48,7 @@ class ReplicantTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
   
   @Test def testResult {
     val callHandler = new TestCallHandler[A] {
-      override def expect(call: Call, response: => A) {
+      override def update(call: Call, response: => A) {
         call should equal(baseCall)
         this.response = response _
       }
@@ -63,7 +63,7 @@ class ReplicantTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
   
   @Test def testReplicantWithNoArgs {
     val callHandler = new TestCallHandler[A] {
-      override def expect(call: Call, response: => A) {
+      override def update(call: Call, response: => A) {
         call should equal(baseCall)
         this.response = response _
       }
@@ -78,7 +78,7 @@ class ReplicantTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
   
   @Test def testReplicantWithOneArgList {
     val callHandler = new TestCallHandler[A] {
-      override def expect(call: Call, response: => A) {
+      override def update(call: Call, response: => A) {
         call should equal(baseCall(1, "a"))
         this.response = response _
       }
@@ -93,7 +93,7 @@ class ReplicantTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
   
   @Test def testReplicantWithTwoArgLists {
     val callHandler = new TestCallHandler[A] {
-      override def expect(call: Call, response: => A) {
+      override def update(call: Call, response: => A) {
         call should equal(baseCall(7)(1, "a"))
         this.response = response _
       }

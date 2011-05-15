@@ -22,7 +22,7 @@ class Mocker2Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
   
   @Test def testExpect {
     val callHandler = new TestCallHandler[A] {
-      override def expect(call: Call, response: => A) {
+      override def update(call: Call, response: => A) {
         call should equal(outer.call(1, "a")(1))
         this.response = response _
       }

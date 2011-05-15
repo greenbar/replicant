@@ -41,7 +41,7 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
     }
     val handler = new StandardCallHandler[A](baseCall, responder, NoResponse)
     
-    handler.expect(call1, result1)
+    handler(call1) = result1
     
     responder.response() should equal(result1)
   }
@@ -114,8 +114,8 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
 
   @Test def testRecordingCalls {
     val handler = CallHandler[A](baseCall, NoResponse)
-    handler.expect(call1, result1)
-    handler.expect(call2, result2)
+    handler(call1) = result1
+    handler(call2) = result2
     
     handler.assertNotCalled
     intercept[TestFailedException] { 

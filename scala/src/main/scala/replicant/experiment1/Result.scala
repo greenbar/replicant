@@ -4,7 +4,7 @@ import replicant.{Call, CallHandler}
 case class Result[Value](call: Call, callHandler: CallHandler[Value]) extends Replicant[Result[Value]] {
 
   def response: Value = callHandler(call)
-  def response_=(response: => Value) { callHandler.expect(call, response) }
+  def response_=(response: => Value) { callHandler(call) = response       }
   def assertCalled()                 { callHandler.assertCalled(call)     }
   def assertCalledOnce()             { callHandler.assertCalledOnce       } 
   def assertNotCalled()              { callHandler.assertNotCalled        } 

@@ -2,7 +2,7 @@
 package replicant
 
 private[replicant] trait CallHandler[Result] {
-  def expect(call: Call, response: => Result): Unit
+  def update(call: Call, response: => Result): Unit
   def apply(call: Call): Result
   def assertExpectationsMet: Unit
   def assertNotCalled: Unit
@@ -21,7 +21,7 @@ private[replicant] class StandardCallHandler[Result](
     private val fallback: ResponseFallback[Result]
 ) extends CallHandler[Result] {
   
-  def expect(call: Call, response: => Result) { responder(call) = response _ }
+  def update(call: Call, response: => Result) { responder(call) = response _ }
 
   def apply(call: Call): Result = {
     called += call
