@@ -8,14 +8,6 @@ class MappedResponder[Result] extends Responder[Result] {
 
   def update(call: Call, response: () => Result) { responses(call) = response }
   
-  def apply(call: Call): Either[UnknownResponseException, () => Result] = {
-    called += call
-    responses.get(call) match {
-      case Some(response) => Right(response)
-      case None           => Left(new UnknownResponseException("No response expected for " + call))
-    }
-  }
-  
   def responseFor(call: Call): Response[Result] = {
     called += call
     responses.get(call) match {

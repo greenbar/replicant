@@ -25,16 +25,17 @@ class PackageTest extends junit.JUnit3Suite with ShouldMatchers {
     verifyNoResponseFallback[A      ]
   } 
   
+  private val message = "message"
+
   private def verifyUnitResponseFallback(implicit responseFallback: ResponseFallback[Unit]) {
-    val exception = new UnknownResponseException("testing")
-    responseFallback(exception)() should equal(())
+    responseFallback(message) should equal(())
   } 
   
   private def verifyNoResponseFallback[T](implicit responseFallback: ResponseFallback[T]) {
-    val exception = new UnknownResponseException("testing")
+    val exception = new UnknownResponseException(message)
     intercept[UnknownResponseException] { 
-      responseFallback(exception)
-    } should be theSameInstanceAs(exception)
+      responseFallback(message)
+    } should equal(new UnknownResponseException(message))
   } 
   
 }

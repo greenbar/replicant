@@ -15,7 +15,6 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   
   class TestResponder[Result] extends Responder[Result] with testing.NotImplemented {
     def update(call: Call, response: () => Result): Unit                  = notImplemented
-    def apply(call: Call): Either[UnknownResponseException, () => Result] = notImplemented
     def responseFor(call: Call): Response[Result]                         = notImplemented
     def assertExpectationsMet: Unit                                       = notImplemented
   }
