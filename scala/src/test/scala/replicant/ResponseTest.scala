@@ -14,14 +14,14 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
   private val result1 = A(1)
 
   @Test def testValueResponseWithNoFallback {
-    val response: Response[A] = new ValueResponse(() => result1)
+    val response: Response[A] = new ValueResponse(result1)
     
     response.value(NoResponse) should be(result1)
   } 
   
   @Test def testValueResponseWithUnitFallback {
     var x = ""
-    val response: Response[Unit] = new ValueResponse(() => x = "got it")
+    val response: Response[Unit] = new ValueResponse(x = "got it")
   
     response.value(UnitFallback)
     x should be("got it")
@@ -43,5 +43,5 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
     
     response.value(UnitFallback) should be(())
   } 
-  
+
 }
