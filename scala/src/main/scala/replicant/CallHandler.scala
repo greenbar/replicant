@@ -27,7 +27,7 @@ private[replicant] class StandardCallHandler[Result](
 
   def apply(call: Call): Result = {
     called += call
-    responseFor(call)()
+    responder.responseFor(call).value(fallback)
   }
 
   def assertExpectationsMet { responder.assertExpectationsMet }
@@ -48,8 +48,6 @@ private[replicant] class StandardCallHandler[Result](
   
   private def describe(calls: Iterable[Call]): String = Call.describe(calls) 
   
-  private def responseFor(call: Call) = responder(call).fold(fallback(_), identity)
-
   private val called = scala.collection.mutable.ListBuffer[Call]()
   
   override def equals(other: Any) = other match {

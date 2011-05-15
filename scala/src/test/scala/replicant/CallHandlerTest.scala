@@ -49,9 +49,9 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   
   @Test def testApplyWithNoFallbackWhenResponderReturnsResponse {
     val responder = new TestResponder[A] {
-      override def apply(call: Call): Either[UnknownResponseException, () => A] = {
+      override def responseFor(call: Call): Response[A] = {
         call should equal(call1)
-        Right(() => result1)
+        ValueResponse(() => result1)
       }
     }
     val handler = new StandardCallHandler[A](baseCall, responder, NoResponse)
@@ -60,26 +60,25 @@ class CallHandlerTest extends junit.JUnit3Suite with ShouldMatchers {
   }
   
   @Test def testApplyWithNoFallbackWhenResponderReturnsUnknownResponseException {
-    val exception = new UnknownResponseException("testing")
+    val message = "message"
     val responder = new TestResponder[A] {
-      override def apply(call: Call): Either[UnknownResponseException, () => A] = {
+      override def responseFor(call: Call): Response[A] = {
         call should equal(call1)
-        Left(exception)
+        UnknownResponse(message)
       }
     }
     val handler = new StandardCallHandler[A](baseCall, responder, NoResponse)
 
     intercept[UnknownResponseException] { 
       handler(call1) 
-    } should be theSameInstanceAs(exception)
+    } should be(new UnknownResponseException(message))
   }
   
   @Test def testApplyWithUnitFallbackWhenResponderReturnsUnknownResponseException {
-    val exception = new UnknownResponseException("testing")
     val responder = new TestResponder[Unit] {
-      override def apply(call: Call): Either[UnknownResponseException, () => Unit] = {
+      override def responseFor(call: Call): Response[Unit] = {
         call should equal(call1)
-        Left(exception)
+        UnknownResponse("message")
       }
     }
     val handler = new StandardCallHandler[Unit](baseCall, responder, UnitFallback)
