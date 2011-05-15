@@ -10,7 +10,7 @@ private[replicant] trait CallHandler[Result] {
   def assertCalledOnce: Unit
 }
 
-object CallHandler {
+private object CallHandler {
   def apply[Result](call: Call, fallback: ResponseFallback[Result]): CallHandler[Result] = 
     new StandardCallHandler(call, new MappedResponder[Result](), fallback)
 }
@@ -21,9 +21,7 @@ private[replicant] class StandardCallHandler[Result](
     private val fallback: ResponseFallback[Result]
 ) extends CallHandler[Result] {
   
-  def expect(call: Call, response: => Result) { 
-    responder(call) = response _ 
-  }
+  def expect(call: Call, response: => Result) { responder(call) = response _ }
 
   def apply(call: Call): Result = {
     called += call
@@ -33,6 +31,7 @@ private[replicant] class StandardCallHandler[Result](
   def assertExpectationsMet { responder.assertExpectationsMet }
 
   import org.scalatest.Assertions.assert
+  import Call.describe 
   
   def assertNotCalled { 
     assert(called.isEmpty, "Expected no calls to " + baseCall + ", but received " + describe(called))
@@ -45,8 +44,6 @@ private[replicant] class StandardCallHandler[Result](
   def assertCalledOnce { 
     assert(called.size == 1, "Expected " + baseCall + " to be called once, but received " + describe(called))
   }
-  
-  private def describe(calls: Iterable[Call]): String = Call.describe(calls) 
   
   private val called = scala.collection.mutable.ListBuffer[Call]()
   
