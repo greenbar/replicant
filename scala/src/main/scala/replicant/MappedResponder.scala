@@ -16,6 +16,14 @@ class MappedResponder[Result] extends Responder[Result] {
     }
   }
   
+  def responseFor(call: Call): Response[Result] = {
+    called += call
+    responses.get(call) match {
+      case Some(response) => ValueResponse(response) 
+      case None           => UnknownResponse("No response expected for " + call)
+    }
+  }
+  
   import org.scalatest.Assertions.assert
 
   def assertExpectationsMet { 

@@ -17,14 +17,22 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
   private val error2 = "error2"
 
   @Test def testValueResponseWithNoFallback {
-    val response: Response[A] = ValueResponse(result1)
+    val response: Response[A] = ValueResponse(() => result1)
     
     response.value(NoResponse) should be(result1)
   } 
   
+  @Test def testValueResponseThatThrows {
+    val response: Response[A] = ValueResponse(() => throw TestException)
+    
+    intercept[TestException] { 
+      response.value(NoResponse)
+    } should be(TestException)
+  } 
+  
   @Test def testValueResponseWithUnitFallback {
     var x = ""
-    val response: Response[Unit] = ValueResponse(x = "got it")
+    val response: Response[Unit] = ValueResponse(() => x = "got it")
   
     response.value(UnitFallback)
     x should be("got it")
@@ -36,7 +44,6 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
     intercept[UnknownResponseException] { 
       response.value(NoResponse)
     } should equal(new UnknownResponseException(error1))
-
   } 
   
   @Test def testUnknownResponseWithUnitFallback {
@@ -45,18 +52,19 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
     response.value(UnitFallback) should be(())
   } 
 
-  @Test def testValueResponseEquality {
-    testEqualityOf(   ValueResponse(result1)  ).
-      shouldEqual(    ValueResponse(result1)  ).
-      shouldNotEqual( ValueResponse(result2)  ).
+  @Test def testResponseEquality {
+    val f1 = () => result1
+    val f2 = () => result2
+
+    testEqualityOf(   ValueResponse(f1)  ).
+      shouldEqual(    ValueResponse(f1)  ).
+      shouldNotEqual( ValueResponse(f2)  ).
       shouldNotEqual( UnknownResponse(error1) )
-  }
- 
-  @Test def testUnknownResponseEquality {
+
     testEqualityOf(   UnknownResponse(error1) ).
       shouldEqual(    UnknownResponse(error1) ).
       shouldNotEqual( UnknownResponse(error2) ).
-      shouldNotEqual( ValueResponse(result1)  )
+      shouldNotEqual( ValueResponse(f1)  )
   }
   
 

@@ -2,6 +2,7 @@
 package object testing extends org.scalatest.Assertions {
 
   class TestException(message: String) extends Exception(message)
+  object TestException extends TestException("test")
   
   trait NotImplemented {
     protected def notImplemented = fail("not implemented")
