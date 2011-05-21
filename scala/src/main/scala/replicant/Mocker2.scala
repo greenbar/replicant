@@ -2,13 +2,10 @@
 package replicant
 
 object Mocker2 {
-
-  def apply[Args1, Args2, Result](mock: Any, methodName: String)
-  (implicit fallback: ResponseFallback[Result]): Mocker2[Args1, Args2, Result] = {
+  def apply[Args1, Args2, Result: ResponseFallback](mock: Any, methodName: String): Mocker2[Args1, Args2, Result] = {
     val call = Call(mock, methodName)
-    new Mocker2(call, CallHandler(call, fallback))
+    new Mocker2(call, CallHandler(call, implicitly[ResponseFallback[Result]]))
   }
-    
 }
 
 class Mocker2[Args1, Args2, Result] private[replicant] (call: Call, callHandler: CallHandler[Result]) {

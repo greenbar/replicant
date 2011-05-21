@@ -3,8 +3,8 @@ package sample
 
 import replicant._
 
-class MockGenericRepository[Subject](implicit fallback: ResponseFallback[Subject]) 
-extends GenericRepository[Subject] { mock =>
+class MockGenericRepository[Subject: ResponseFallback] extends GenericRepository[Subject] { 
+  mock =>
   trait Stub {
     val store    = Mocker[Subject, Unit](mock, "store")
     val findById = Mocker[Long, Subject](mock, "findById")

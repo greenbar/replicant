@@ -19,14 +19,14 @@ package object testing extends org.scalatest.Assertions {
         None
   }
   
-  def assertThrows[Type <: Throwable](code: => Unit)(implicit exceptionType: Manifest[Type]): Type = {
-    val expectedException = new TypeMatcher(exceptionType)
+  def assertThrows[Type <: Throwable: Manifest](code: => Unit): Type = {
+    val expectedException = new TypeMatcher(implicitly[Manifest[Type]])
     try {
       code
-      fail("Expected " + exceptionType + ", but nothing was thrown.")
+      fail("Expected " + implicitly[Manifest[Type]] + ", but nothing was thrown.")
     } catch {
       case expectedException(e) => e 
-      case e: Exception         => fail("Expected " + exceptionType + ", but caught " + e)
+      case e: Exception         => fail("Expected " + implicitly[Manifest[Type]] + ", but caught " + e)
     }
   }
 
