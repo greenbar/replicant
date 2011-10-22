@@ -12,7 +12,7 @@ import testing._
 class UnknownResponseExceptionTest extends junit.JUnit3Suite with ShouldMatchers {
  
   @Test def testUnknownResponseException {
-    val exception = new UnknownResponseException("message");
+    val exception = new UnknownResponseException("message")
     
     exception.getMessage should equal("message")
     exception should equal(    new UnknownResponseException("message"))

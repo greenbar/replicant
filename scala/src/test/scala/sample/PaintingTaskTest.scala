@@ -13,25 +13,25 @@ import replicant._
 @RunWith(classOf[JUnitRunner])
 class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
 
-  private val widget1: Widget = Widget(1);
-  private val widget2 = Widget(2);
-  private val widget3 = Widget(3);
+  private val widget1: Widget = Widget(1)
+  private val widget2 = Widget(2)
+  private val widget3 = Widget(3)
 
   @Test def testPaintTask {
     val requestQueue     = new MockRequestQueue
     val painter          = new MockWidgetPainter
     val widgetRepository = new MockGenericRepository[Widget]
-    val paintingTask     = new PaintingTask(requestQueue, painter, widgetRepository);
+    val paintingTask     = new PaintingTask(requestQueue, painter, widgetRepository)
 
     val requests = scala.collection.mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
     requestQueue.method.nextRequest.expect { requests.dequeue }
     locally {
       import widgetRepository.method._
-      findById.expect(17) {widget1};
-      findById.expect(42) {widget2};
-      findById.expect(37) {widget3};
+      findById.expect(17) {widget1}
+      findById.expect(42) {widget2}
+      findById.expect(37) {widget3}
       for (widget <- List(widget1, widget2, widget3))
-        store.expect(widget) { painter.method.paintWidget.assertCalled(widget) };
+        store.expect(widget) { painter.method.paintWidget.assertCalled(widget) }
     }
     
     paintingTask.run
