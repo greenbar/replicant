@@ -8,7 +8,7 @@ case class ArgListValue(args: Any) {
   private def describe(args: Any) = args match {
     case ()               => ""
     case product: Product => product.productIterator.mkString(", ")
-    case _                => args.toString
+    case _                => String.valueOf(args)
   }
 
 }

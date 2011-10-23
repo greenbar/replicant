@@ -11,6 +11,18 @@ import testing._
 @RunWith(classOf[JUnitRunner])
 class ArgListValueTest extends junit.JUnit3Suite with ShouldMatchers {
 
+  @Test def testToStringWithNull {
+    val argList: ArgListValue = ArgListValue(null)
+    
+    argList.toString should equal("(null)")
+  } 
+  
+  @Test def testToStringWithNulls {
+    val argList: ArgListValue = ArgListValue(null, null)
+    
+    argList.toString should equal("(null, null)")
+  } 
+  
   @Test def testToStringWithMultipleArgs {
     val argList: ArgListValue = ArgListValue(1, "abc")
     
