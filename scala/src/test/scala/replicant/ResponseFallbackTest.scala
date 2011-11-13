@@ -9,12 +9,10 @@ import org.junit.runner._
 import testing._
 
 @RunWith(classOf[JUnitRunner])
-class PackageTest extends junit.JUnit3Suite with ShouldMatchers {
+class ResponseFallbackTest extends junit.JUnit3Suite with ShouldMatchers {
  
-  private val message = "message"
-
   @Test def testImplicitResponseFallbacks {
-    
+
     implicitly[ResponseFallback[Unit]].apply(message) should equal(())
 
     verifyNoResponseFallback[Boolean]
@@ -29,6 +27,8 @@ class PackageTest extends junit.JUnit3Suite with ShouldMatchers {
     verifyNoResponseFallback[A      ]
   } 
   
+  private val message = "message"
+    
   private def verifyNoResponseFallback[Result: ResponseFallback] {
     intercept[UnknownResponseException] { 
       implicitly[ResponseFallback[Result]].apply(message)

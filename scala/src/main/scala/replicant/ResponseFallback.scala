@@ -12,3 +12,8 @@ private[replicant] object NoResponse extends ResponseFallback[Nothing] {
 private[replicant] object UnitFallback extends ResponseFallback[Unit] {
   def apply(error: String) { }
 }
+
+object ResponseFallback {
+  implicit def responseFallbackFor[Result]: ResponseFallback[Result] = NoResponse
+  implicit val responseFallbackForUnit:     ResponseFallback[Unit]   = UnitFallback
+}
