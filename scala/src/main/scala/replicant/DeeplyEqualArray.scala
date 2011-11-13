@@ -11,3 +11,9 @@ class DeeplyEqualArray[Type](val self: Array[Type]) {
   
   override def toString: String = self.deep.toString
 }
+
+object DeeplyEqualArray {
+
+  implicit def toDeeplyEqualArray[Type](array: Array[Type]): DeeplyEqualArray[Type] = new DeeplyEqualArray(array)
+
+}
