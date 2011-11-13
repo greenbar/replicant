@@ -1,3 +1,4 @@
+.cache
 .scala_dependencies
 .settings
 lib_managed
