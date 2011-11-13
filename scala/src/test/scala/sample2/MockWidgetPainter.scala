@@ -1,11 +1,15 @@
 // Copyright 2011 Kiel Hodges
 package sample2
 
-class MockWidgetPainter extends WidgetPainter { mock =>
-  object method {
-    import replicant._
-    import experiment1._
-    val paintWidget: ArgList[Widget, Result[Unit]] = Replicant.with1ArgList(mock, "paintWidget")
+import replicant._
+import experiment1._
+
+class MockWidgetPainter extends XMockController[WidgetPainter] { self =>
+
+  val testDouble: WidgetPainter = new WidgetPainter {
+    def paintWidget(widget: Widget) { self.paintWidget(widget).response }
   }
-  def paintWidget(widget: Widget) = method.paintWidget(widget).response
+
+  val paintWidget = method("paintWidget", testDouble.paintWidget _)
+  
 }
