@@ -3,10 +3,10 @@ package sample
 
 import replicant._
 
-class MockWidgetPainter extends MockController[WidgetPainter] { self =>
+class MockWidgetPainter extends MockController[WidgetPainter] { controller =>
 
   val mock: WidgetPainter = new WidgetPainter {
-    def paintWidget(widget: Widget) { self.paintWidget(widget) }
+    def paintWidget(widget: Widget) { controller.paintWidget(widget) }
   }
 
   val paintWidget = method("paintWidget", mock.paintWidget _)

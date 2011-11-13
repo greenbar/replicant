@@ -3,10 +3,10 @@ package sample
 
 import replicant._
 
-class MockRequestQueue extends MockController[RequestQueue] { self => 
+class MockRequestQueue extends MockController[RequestQueue] { controller => 
 
   val mock: RequestQueue = new RequestQueue {
-    def nextRequest: Option[Request] = self.nextRequest()
+    def nextRequest: Option[Request] = controller.nextRequest()
   }
 
   val nextRequest = method("nextRequest", mock.nextRequest _)
