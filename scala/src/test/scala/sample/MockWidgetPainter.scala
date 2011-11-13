@@ -1,10 +1,14 @@
 // Copyright 2011 Kiel Hodges
 package sample
 
-class MockWidgetPainter extends WidgetPainter { mock =>
-  object method {
-    import replicant._
-    val paintWidget = Mocker[Widget, Unit](mock, "paintWidget")
+import replicant._
+
+class MockWidgetPainter extends MockController[WidgetPainter] { self =>
+
+  val mock: WidgetPainter = new WidgetPainter {
+    def paintWidget(widget: Widget) { self.paintWidget(widget) }
   }
-  def paintWidget(widget: Widget) = method.paintWidget(widget)
+
+  val paintWidget = method("paintWidget", mock.paintWidget _)
+
 }

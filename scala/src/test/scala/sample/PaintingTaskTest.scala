@@ -13,7 +13,9 @@ import replicant._
 @RunWith(classOf[JUnitRunner])
 class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
 
-  private val widget1: Widget = Widget(1)
+  import scala.collection.mutable
+
+  private val widget1 = Widget(1)
   private val widget2 = Widget(2)
   private val widget3 = Widget(3)
 
@@ -21,35 +23,34 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
     val requestQueue     = new MockRequestQueue
     val painter          = new MockWidgetPainter
     val widgetRepository = new MockGenericRepository[Widget]
-    val paintingTask     = new PaintingTask(requestQueue, painter, widgetRepository)
+    val paintingTask     = new PaintingTask(requestQueue.mock, painter.mock, widgetRepository.mock)
 
-    val requests = scala.collection.mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
-    requestQueue.method.nextRequest.expect { requests.dequeue }
-    locally {
-      import widgetRepository.method._
-      findById.expect(17) {widget1}
-      findById.expect(42) {widget2}
-      findById.expect(37) {widget3}
-      for (widget <- List(widget1, widget2, widget3))
-        store.expect(widget) { painter.method.paintWidget.assertCalled(widget) }
+    val requests = mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
+    requestQueue.nextRequest.expect { 
+      requests.dequeue 
     }
+    widgetRepository.findById.expect(17) {widget1}
+    widgetRepository.findById.expect(42) {widget2}
+    widgetRepository.findById.expect(37) {widget3}
+    for (widget <- List(widget1, widget2, widget3))
+      widgetRepository.store.expect(widget) { painter.paintWidget.assertCalled(widget) }
     
     paintingTask.run
     
-    widgetRepository.method.store.assertExpectationsMet
+    widgetRepository.store.assertExpectationsMet
   }
   
   @Test def testOrderingResponses {
     val queue = new MockRequestQueue
-    val requests = scala.collection.mutable.Queue(Some(Request(1)), Some(Request(2)), Some(Request(3)), None)
-    queue.method.nextRequest.expect {
+    val requests = mutable.Queue(Some(Request(1)), Some(Request(2)), Some(Request(3)), None)
+    queue.nextRequest.expect {
       requests.dequeue
     }
-    queue.nextRequest should equal(Some(Request(1)))
-    queue.nextRequest should equal(Some(Request(2)))
-    queue.nextRequest should equal(Some(Request(3)))
-    queue.nextRequest should equal(None)
-    intercept[java.util.NoSuchElementException] { queue.nextRequest }
+    queue.mock.nextRequest should equal(Some(Request(1)))
+    queue.mock.nextRequest should equal(Some(Request(2)))
+    queue.mock.nextRequest should equal(Some(Request(3)))
+    queue.mock.nextRequest should equal(None)
+    intercept[java.util.NoSuchElementException] { queue.mock.nextRequest }
   }
   
   class Mocker2[Args1, Args2, Result](mock: Any, methodName: String) {

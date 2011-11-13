@@ -17,4 +17,15 @@ class Mocker[Args, Result] private[replicant] (call: Call, callHandler: CallHand
   def assertNotCalled                         { callHandler.assertNotCalled              } 
   def assertExpectationsMet                   { callHandler.assertExpectationsMet        } 
 
+  override def toString = "Mocker(" + call + ", " + callHandler + ')'
+
+  private val equalityKey = (call, callHandler)
+
+  override def equals(other: Any) = other match {
+    case that: Mocker[_, _] => this.equalityKey == that.equalityKey
+    case _ => false
+  }
+  
+  override def hashCode = equalityKey.hashCode 
+
 }

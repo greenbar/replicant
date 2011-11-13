@@ -1,10 +1,14 @@
 // Copyright 2011 Kiel Hodges
 package sample
 
-class MockRequestQueue extends RequestQueue { mock =>
-  object method {
-    import replicant._
-    val nextRequest = Mocker0[Option[Request]](mock, "nextRequest")
+import replicant._
+
+class MockRequestQueue extends MockController[RequestQueue] { self => 
+
+  val mock: RequestQueue = new RequestQueue {
+    def nextRequest: Option[Request] = self.nextRequest()
   }
-  def nextRequest = method.nextRequest()
+
+  val nextRequest = method("nextRequest", mock.nextRequest _)
+
 }

@@ -126,5 +126,16 @@ class MockerTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
     callHandler.shouldFail = true
     intercept[TestFailedException] { mocker.assertExpectationsMet } should be theSameInstanceAs(testFailedException)
   } 
-  
+
+  @Test def testMocker0Equality {
+    val mock1 = Mock("mock1")
+    val mock2 = Mock("mock2")
+    testEqualityOf(   Mocker(mock1, "methodName1") ) .
+      shouldEqual(    Mocker(mock1, "methodName1") ).
+      shouldNotEqual( Mocker(mock2, "methodName1") ).
+      shouldNotEqual( Mocker(mock1, "methodName2") ).
+      shouldNotEqual( Mocker0(mock1, "methodName1") ).
+      shouldNotEqual( Mocker2(mock1, "methodName1") )
+  } 
+
 }
