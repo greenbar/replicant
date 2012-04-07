@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/scala"/>
-	<classpathentry kind="src" path="src/test/scala"/>
-	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib_managed/scala_2.8.1/test/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="lib_managed/scala_2.9.0/compile/scalatest_2.9.0-1.6.1.jar" sourcepath="lib_managed/scala_2.9.0/compile/scalatest_2.9.0-1.6.1-sources.jar"/>
-	<classpathentry kind="output" path="target"/>
+  <classpathentry output="target/scala-2.9.1/classes" path="src/main/scala" kind="src"></classpathentry>
+  <classpathentry output="target/scala-2.9.1/classes" path="src/main/java" kind="src"></classpathentry>
+  <classpathentry output="target/scala-2.9.1/test-classes" path="src/test/scala" kind="src"></classpathentry>
+  <classpathentry output="target/scala-2.9.1/test-classes" path="src/test/java" kind="src"></classpathentry>
+  <classpathentry path="org.scala-ide.sdt.launching.SCALA_CONTAINER" kind="con"></classpathentry>
+  <classpathentry kind="lib" path="./lib_managed/jars/org.scalatest/scalatest_2.9.0/scalatest_2.9.0-1.4.1.jar" sourcepath="./lib_managed/srcs/org.scalatest/scalatest_2.9.0/scalatest_2.9.0-1.4.1-sources.jar"></classpathentry>
+  <classpathentry kind="lib" path="./lib_managed/jars/junit/junit/junit-4.8.1.jar" sourcepath="./lib_managed/srcs/junit/junit/junit-4.8.1-sources.jar"></classpathentry>
+  <classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"></classpathentry>
+  <classpathentry path="bin" kind="output"></classpathentry>
 </classpath>
