@@ -1,5 +1,5 @@
 // Copyright 2011 Kiel Hodges
-package replicant
+package replicant.support
 
 import org.scalatest._
 import org.scalatest.matchers._
@@ -15,6 +15,8 @@ class ResponseTest extends junit.JUnit3Suite with ShouldMatchers {
   private val result2 = A(2)
   private val error1 = "error1"
   private val error2 = "error2"
+
+  import replicant.{NoResponse, UnitFallback, UnknownResponseException}
 
   @Test def testValueResponseWithNoFallback {
     val response: Response[A] = ValueResponse(() => result1)

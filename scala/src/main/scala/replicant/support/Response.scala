@@ -1,4 +1,7 @@
-package replicant
+// Copyright 2011 Kiel Hodges
+package replicant.support
+
+import replicant.ResponseFallback
 
 abstract class Response[Result] {
   def value(fallback: ResponseFallback[Result]): Result

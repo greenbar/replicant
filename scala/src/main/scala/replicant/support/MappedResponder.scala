@@ -1,7 +1,5 @@
 // Copyright 2011 Kiel Hodges
-package replicant
-
-import support._
+package replicant.support
 
 class MappedResponder[Result] extends Responder[Result] {
   
