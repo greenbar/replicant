@@ -1,6 +1,8 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
+import support._
+
 object Mocker2 {
   def apply[Args1, Args2, Result: ResponseFallback](mock: Any, methodName: String): Mocker2[Args1, Args2, Result] = {
     val call = Call(mock, methodName)

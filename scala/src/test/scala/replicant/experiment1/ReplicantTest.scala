@@ -12,6 +12,7 @@ import testing._
 class ReplicantTest extends junit.JUnit3Suite with ShouldMatchers { outer =>
  
   import replicant._
+  import support._
   
   private case class Mock(name: String) 
   

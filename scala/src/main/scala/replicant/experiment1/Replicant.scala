@@ -15,9 +15,10 @@ object Replicant {
   import replicant.ResponseFallback
   
   def withNoArgList[ResultValue: ResponseFallback](mock: Any, methodName: String): Result[ResultValue] = {
-    import replicant.{Call, CallHandler}
+    import replicant.Call
+    import replicant.support.CallHandler
     val baseCall = Call(mock, methodName)
-    Result(baseCall, CallHandler(baseCall, implicitly[ResponseFallback[ResultValue]]))
+    Result(baseCall, replicant.support.CallHandler(baseCall, implicitly[ResponseFallback[ResultValue]]))
   }
 
   def with1ArgList[Args, ResultValue: ResponseFallback](mock: Any, methodName: String): 

@@ -4,7 +4,8 @@ trait XMockController[TestDouble] {
 
   val testDouble: TestDouble
 
-  import replicant.{Call, CallHandler, ResponseFallback}
+  import replicant.{Call, ResponseFallback}
+  import replicant.support.CallHandler
 
   protected def method[ResultValue: ResponseFallback](methodName: String, target: () => ResultValue) = {
     val baseCall = Call(testDouble, methodName)
