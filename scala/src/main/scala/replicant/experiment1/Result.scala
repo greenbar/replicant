@@ -1,7 +1,7 @@
 package replicant.experiment1
 
-import replicant.Call
-import replicant.support.CallHandler
+import replicant.support.{Call, CallHandler}
+
 case class Result[Value](call: Call, callHandler: CallHandler[Value]) extends Replicant[Result[Value]] {
 
   def response: Value = callHandler(call)

@@ -12,6 +12,8 @@ import testing._
 @RunWith(classOf[JUnitRunner])
 class MappedResponderTest extends junit.JUnit3Suite with ShouldMatchers {
  
+  import support.Call
+
   private val result1 = A(1)
   private val result2 = A(2)
    

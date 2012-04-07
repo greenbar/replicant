@@ -1,5 +1,5 @@
 // Copyright 2011 Kiel Hodges
-package replicant
+package replicant.support
 
 sealed class Call private(mock: Any, methodName: String, argLists: List[ArgListValue]) {
   

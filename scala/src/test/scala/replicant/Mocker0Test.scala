@@ -12,7 +12,7 @@ import testing._
 class Mocker0Test extends junit.JUnit3Suite with ShouldMatchers { outer =>
  
   import replicant._
-  import support.TestCallHandler
+  import support.{Call, TestCallHandler}
   
   private case class Mock(name: String) 
 

@@ -1,5 +1,5 @@
 // Copyright 2011 Kiel Hodges
-package replicant
+package replicant.support
 
 case class ArgListValue(args: Any) {
   

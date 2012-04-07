@@ -1,6 +1,8 @@
 // Copyright 2011 Kiel Hodges
 package replicant
 
+import support._
+
 class MappedResponder[Result] extends Responder[Result] {
   
   private val responses = scala.collection.mutable.LinkedHashMap[Call, ValueResponse[Result]]()
