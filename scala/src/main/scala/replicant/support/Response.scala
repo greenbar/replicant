@@ -3,7 +3,7 @@ package replicant.support
 
 import replicant.ResponseFallback
 
-abstract class Response[Result] {
+private[support] sealed trait Response[Result] {
   def value(fallback: ResponseFallback[Result]): Result
 }
 

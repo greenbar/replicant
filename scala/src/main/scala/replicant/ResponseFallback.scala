@@ -10,7 +10,7 @@ private[replicant] object NoResponse extends ResponseFallback[Nothing] {
 }
 
 private[replicant] object UnitFallback extends ResponseFallback[Unit] {
-  def apply(error: String) { }
+  def apply(error: String) = ()
 }
 
 object ResponseFallback {

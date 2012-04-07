@@ -3,7 +3,7 @@ package replicant.support
 
 import replicant._
 
-trait CallHandler[Result] {
+private[replicant] trait CallHandler[Result] {
   def update(call: Call, response: => Result): Unit
   def apply(call: Call): Result
   def assertExpectationsMet: Unit
@@ -12,12 +12,12 @@ trait CallHandler[Result] {
   def assertCalledOnce: Unit
 }
 
-object CallHandler {
+private[replicant] object CallHandler {
   def apply[Result](call: Call, fallback: ResponseFallback[Result]): CallHandler[Result] = 
     new StandardCallHandler(call, new MappedResponder[Result](), fallback)
 }
 
-private[replicant] class StandardCallHandler[Result](
+private[support] class StandardCallHandler[Result](
     baseCall: Call, 
     responder: Responder[Result], 
     fallback: ResponseFallback[Result]
