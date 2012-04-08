@@ -1,6 +1,6 @@
 package replicant
 
-trait MockController[Mock] {
+trait MockMinder[Mock] {
 
   val mock: Mock
 

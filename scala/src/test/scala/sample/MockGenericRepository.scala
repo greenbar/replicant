@@ -3,11 +3,11 @@ package sample
 
 import replicant._
 
-class MockGenericRepository[Subject: ResponseFallback] extends MockController[GenericRepository[Subject]] { controller =>
+class MockGenericRepository[Subject: ResponseFallback] extends MockMinder[GenericRepository[Subject]] { minder =>
   
   protected class BaseSubject {
-    def store(subject: Subject) = controller.store(subject)
-    def findById(id: Long)  = controller.findById(id)
+    def store(subject: Subject) = minder.store(subject)
+    def findById(id: Long)  = minder.findById(id)
   }
   
   val mock: GenericRepository[Subject] = new BaseSubject with GenericRepository[Subject]
