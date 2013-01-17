@@ -1,8 +1,12 @@
 package replicant
 
-trait MockMinder[Mock] {
+object Mock {
+  implicit def toMock[Subject](minder: Mock[Subject]) : Subject = minder.mock
+}
 
-  val mock: Mock
+trait Mock[Subject] {
+
+  val mock: Subject
 
   protected def method[Result: ResponseFallback](methodName: String, target: () => Result) =
     Mocker0[Result](mock, methodName)
@@ -12,5 +16,6 @@ trait MockMinder[Mock] {
 
   protected def method[Arg1, Arg2, Result: ResponseFallback](methodName: String, target: (Arg1, Arg2) => Result) =
     Mocker[(Arg1, Arg2), Result](mock, methodName)
+
 
 }

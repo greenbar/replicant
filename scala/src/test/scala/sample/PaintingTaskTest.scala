@@ -23,7 +23,7 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
     val requestQueue     = new MockRequestQueue
     val painter          = new MockWidgetPainter
     val widgetRepository = new MockGenericRepository[Widget]
-    val paintingTask     = new PaintingTask(requestQueue.mock, painter.mock, widgetRepository.mock)
+    val paintingTask     = new PaintingTask(requestQueue, painter, widgetRepository)
 
     val requests = mutable.Queue(Some(Request(17)), Some(Request(42)), Some(Request(37)), None)
     requestQueue.nextRequest.expect { 
@@ -42,15 +42,16 @@ class PaintingTaskTest extends junit.JUnit3Suite with ShouldMatchers {
   
   @Test def testOrderingResponses {
     val queue = new MockRequestQueue
+    val mockedQueue: RequestQueue = queue
     val requests = mutable.Queue(Some(Request(1)), Some(Request(2)), Some(Request(3)), None)
     queue.nextRequest.expect {
       requests.dequeue
     }
-    queue.mock.nextRequest should equal(Some(Request(1)))
-    queue.mock.nextRequest should equal(Some(Request(2)))
-    queue.mock.nextRequest should equal(Some(Request(3)))
-    queue.mock.nextRequest should equal(None)
-    intercept[java.util.NoSuchElementException] { queue.mock.nextRequest }
+    mockedQueue.nextRequest should equal(Some(Request(1)))
+    mockedQueue.nextRequest should equal(Some(Request(2)))
+    mockedQueue.nextRequest should equal(Some(Request(3)))
+    mockedQueue.nextRequest should equal(None)
+    intercept[java.util.NoSuchElementException] { mockedQueue.nextRequest }
   }
   
   class Mocker2[Args1, Args2, Result](mock: Any, methodName: String) {

@@ -9,7 +9,7 @@ import org.junit.runner._
 import testing._
 
 @RunWith(classOf[JUnitRunner])
-class MockMinderTest extends junit.JUnit3Suite with ShouldMatchers {
+class MockTest extends junit.JUnit3Suite with ShouldMatchers {
 
   trait Foo {
     def noArgMethod: A
@@ -17,7 +17,7 @@ class MockMinderTest extends junit.JUnit3Suite with ShouldMatchers {
     def twoArgMethod(arg1: A, arg2: B): C
   }
 
-  class FooMinder extends MockMinder[Foo] { minder =>
+  class MockFoo extends Mock[Foo] { minder =>
 
     val mock: Foo = new Foo {
       def noArgMethod                    = minder.noArgMethod()
@@ -31,36 +31,39 @@ class MockMinderTest extends junit.JUnit3Suite with ShouldMatchers {
   }
 
   @Test def testControllerWithNoArgMethod {
-    val minder = new FooMinder
-    
+    val minder = new MockFoo
+    val mock: Foo = minder
+
     val noArgMethod: Mocker0[A] = minder.noArgMethod
 
     minder.noArgMethod should equal(Mocker0[A](minder.mock, "noArgMethod"))
-    
+
     minder.noArgMethod.expect { A(7) }
-    minder.mock.noArgMethod should equal(A(7))
-  } 
-  
+    mock.noArgMethod should equal(A(7))
+  }
+
+
   @Test def testControllerWithOneArgMethod {
-    val minder = new FooMinder
-    
+    val minder = new MockFoo
+    val mock: Foo = minder
+
     val oneArgMethod: Mocker[A, B] = minder.oneArgMethod
-    
+
     minder.oneArgMethod should equal(Mocker[A, B](minder.mock, "oneArgMethod"))
 
     minder.oneArgMethod.expect(A(3)) { B(7) }
-    minder.mock.oneArgMethod(A(3)) should equal(B(7))
-  } 
-  
+    mock.oneArgMethod(A(3)) should equal(B(7))
+  }
+
   @Test def testControllerWithTwoArgMethod {
-    val minder = new FooMinder
-    
+    val minder = new MockFoo
+    val mock: Foo = minder
+
     val twoArgMethod: Mocker[(A, B), C] = minder.twoArgMethod
-    
+
     minder.twoArgMethod should equal(Mocker[(A, B), C](minder.mock, "twoArgMethod"))
 
     minder.twoArgMethod.expect(A(3), B(7)) { C(11) }
-    minder.mock.twoArgMethod(A(3), B(7)) should equal(C(11))
-  } 
-  
+    mock.twoArgMethod(A(3), B(7)) should equal(C(11))
+  }
 }

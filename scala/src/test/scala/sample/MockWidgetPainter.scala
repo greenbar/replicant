@@ -3,7 +3,7 @@ package sample
 
 import replicant._
 
-class MockWidgetPainter extends MockMinder[WidgetPainter] { minder =>
+class MockWidgetPainter extends Mock[WidgetPainter] { minder =>
 
   val mock: WidgetPainter = new WidgetPainter {
     def paintWidget(widget: Widget) { minder.paintWidget(widget) }
