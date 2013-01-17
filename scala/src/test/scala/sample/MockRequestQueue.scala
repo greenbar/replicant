@@ -3,7 +3,7 @@ package sample
 
 import replicant._
 
-class MockRequestQueue extends MockMinder[RequestQueue] { minder => 
+class MockRequestQueue extends Mock[RequestQueue] { minder =>
 
   val mock: RequestQueue = new RequestQueue {
     def nextRequest: Option[Request] = minder.nextRequest()

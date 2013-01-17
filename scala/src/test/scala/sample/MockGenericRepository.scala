@@ -3,7 +3,7 @@ package sample
 
 import replicant._
 
-class MockGenericRepository[Subject: ResponseFallback] extends MockMinder[GenericRepository[Subject]] { minder =>
+class MockGenericRepository[Subject: ResponseFallback] extends Mock[GenericRepository[Subject]] { minder =>
   
   protected class BaseSubject {
     def store(subject: Subject) = minder.store(subject)
